@@ -346,33 +346,29 @@
             });
         }
 
-        // ========== CARGA POR IFRAME ==========
+        // ========== CARGA JSONP DESDE GOOGLE SHEETS ==========
         function loadDemandes() {
             document.getElementById('syncStatus').innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Chargement...';
             document.getElementById('syncStatus').className = 'sync-status local';
             
-            var iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = GOOGLE_URL + '?sheet=demandes&mode=iframe&t=' + Date.now();
-            
+            var cbName = 'jmnet_load_' + Date.now();
+            var script = document.createElement('script');
             var timeout = setTimeout(function() {
-                document.body.removeChild(iframe);
+                if (script.parentNode) script.parentNode.removeChild(script);
+                delete window[cbName];
                 document.getElementById('syncStatus').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Indisponible';
                 document.getElementById('syncStatus').className = 'sync-status error';
             }, 8000);
             
-            window.addEventListener('message', function handler(event) {
-                // Aceptar mensajes de google.com y googleusercontent.com
-                if (event.origin.indexOf('google.com') === -1 && event.origin.indexOf('googleusercontent.com') === -1) return;
-                if (Array.isArray(event.data) && event.data.length > 0) {
-                    clearTimeout(timeout);
-                    if (iframe && iframe.parentNode) document.body.removeChild(iframe);
-                    window.removeEventListener('message', handler);
-                    processSheetData(event.data);
-                }
-            });
+            window[cbName] = function(data) {
+                clearTimeout(timeout);
+                if (script.parentNode) script.parentNode.removeChild(script);
+                delete window[cbName];
+                processSheetData(data);
+            };
             
-            document.body.appendChild(iframe);
+            script.src = GOOGLE_URL + '?sheet=demandes&callback=' + cbName + '&t=' + Date.now();
+            document.head.appendChild(script);
         }
 
         function processSheetData(data) {
