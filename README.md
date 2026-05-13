@@ -1,2 +1,0 @@
-# jmnet
-cleaning website
