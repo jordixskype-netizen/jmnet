@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>JM Net · Espace Autonome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0d47a1 0%, #1e88e5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .autonome-container { max-width: 1400px; margin: 0 auto; }
+        
+        .login-container {
+            background: white;
+            border-radius: 32px;
+            padding: 50px;
+            max-width: 450px;
+            margin: 80px auto;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+        }
+        .login-container h1 {
+            font-size: 1.8rem;
+            color: #1a2a3a;
+            margin-bottom: 10px;
+        }
+        .login-container .subtitle {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 30px;
+        }
+        
+        .main-header {
+            background: white;
+            border-radius: 24px;
+            padding: 15px 25px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo-autonome {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e88e5, #43a047);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .badge-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-online { background: #e8f5e9; color: #2e7d32; }
+        .badge-urgence { background: #ffebee; color: #c62828; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+        
+        .tabs-autonome {
+            display: flex;
+            gap: 6px;
+            background: white;
+            padding: 6px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .tab-autonome {
+            padding: 10px 20px;
+            border-radius: 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #64748b;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-autonome:hover { background: #f1f5f9; }
+        .tab-autonome.active { background: #1e88e5; color: white; }
+        .tab-autonome .badge-count {
+            background: #ef5350;
+            color: white;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 0.7rem;
+        }
+        
+        .panel { display: none; animation: fadeIn 0.3s ease; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+        }
+        .card h3 { color: #1a2a3a; margin-bottom: 15px; font-size: 1.1rem; }
+        
+        .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; color: #1a2a3a; margin-bottom: 6px; }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #1e88e5; box-shadow: 0 0 0 3px rgba(30,136,229,0.1); }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: linear-gradient(135deg, #1e88e5, #0d47a1); color: white; }
+        .btn-success { background: linear-gradient(135deg, #43a047, #2e7d32); color: white; }
+        .btn-danger { background: #ef5350; color: white; }
+        .btn-outline { background: white; border: 2px solid #1e88e5; color: #1e88e5; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        
+        .dispo-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            overflow-x: auto;
+        }
+        .dispo-day {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            min-width: 100px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .dispo-day.active { border-color: #43a047; background: #e8f5e9; }
+        .dispo-day.inactive { border-color: #e2e8f0; opacity: 0.5; }
+        .dispo-day .day-name { font-weight: 700; font-size: 0.8rem; margin-bottom: 8px; }
+        .dispo-day .time-input {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            text-align: center;
+            margin: 3px 0;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-tag {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: white;
+        }
+        .skill-tag.selected {
+            background: #1e88e5;
+            color: white;
+            border-color: #1e88e5;
+        }
+        
+        .travail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 12px;
+            border-left: 4px solid #1e88e5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: all 0.2s;
+        }
+        .travail-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .travail-card.urgent { border-left-color: #ef5350; background: #fff5f5; }
+        
+        .equipe-member {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            background: #f8fafc;
+            border-left: 4px solid #1e88e5;
+        }
+        .equipe-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th { background: #f8fafc; padding: 12px; text-align: left; font-weight: 700; color: #1a2a3a; }
+        td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        tr:hover td { background: #f8fafc; }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 22px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 500;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+        @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
+        
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .sync-online { background: #e8f5e9; color: #2e7d32; }
+        .sync-offline { background: #fff3e0; color: #e65100; }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .dispo-grid { grid-template-columns: repeat(3,1fr); }
+            .tabs-autonome { justify-content: center; }
+            .tab-autonome { font-size: 0.75rem; padding: 8px 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="autonome-container" id="appContainer">
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="login-container">
+            <div style="font-size:3rem;margin-bottom:15px;">🤝</div>
+            <h1>Espace Autonome</h1>
+            <p class="subtitle">Connectez-vous pour voir vos travaux et gérer votre disponibilité</p>
+            <form id="loginForm" style="text-align:left;">
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" class="form-input" id="loginEmail" placeholder="votre@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+            </form>
+            <p style="margin-top:15px;font-size:0.8rem;color:#64748b;">
+                Pas encore inscrit ? <a href="#" id="showRegister" style="color:#1e88e5;">Contacter JM Net</a>
+            </p>
+        </div>
+        
+        <!-- REGISTER SCREEN -->
+        <div id="registerScreen" class="login-container" style="display:none;">
+            <div style="font-size:3rem;margin-bottom:15px;">📝</div>
+            <h1>Nouveau Autonome</h1>
+            <p class="subtitle">Remplissez ce formulaire. Votre compte sera activé par JM Net.</p>
+            <form id="registerForm" style="text-align:left;">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Nom complet</label>
+                    <input type="text" class="form-input" id="regNom" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" class="form-input" id="regEmail" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Téléphone</label>
+                    <input type="tel" class="form-input" id="regTel" required>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Mot de passe (6 caractères minimum)</label>
+                    <input type="password" class="form-input" id="regPassword" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-success" style="width:100%;justify-content:center;">
+                    <i class="fas fa-paper-plane"></i> Demander l'inscription
+                </button>
+            </form>
+            <p style="margin-top:15px;font-size:0.8rem;color:#64748b;">
+                <a href="#" id="showLogin" style="color:#1e88e5;">← Retour à la connexion</a>
+            </p>
+        </div>
+        
+        <!-- DASHBOARD -->
+        <div id="dashboard" style="display:none;">
+            <div class="main-header">
+                <div class="header-left">
+                    <div class="logo-autonome">🤝 JM Net · Autonome</div>
+                    <span class="badge-status badge-online" id="badgeStatus">🟢 En ligne</span>
+                    <span class="badge-status badge-urgence" id="badgeUrgence" style="display:none;">🚨 Urgence!</span>
+                    <span class="sync-badge sync-online" id="syncBadge"><i class="fas fa-cloud"></i> Connecté</span>
+                </div>
+                <div style="display:flex;gap:10px;align-items:center;">
+                    <span style="font-weight:600;color:#1a2a3a;" id="headerName"></span>
+                    <button class="btn btn-outline" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+            
+            <div class="tabs-autonome" id="tabsContainer">
+                <button class="tab-autonome active" data-panel="travaux">
+                    <i class="fas fa-briefcase"></i> Mes Travaux <span class="badge-count" id="countTravaux" style="display:none;">0</span>
+                </button>
+                <button class="tab-autonome" data-panel="equipe">
+                    <i class="fas fa-users"></i> Équipe
+                </button>
+                <button class="tab-autonome" data-panel="profil">
+                    <i class="fas fa-user-cog"></i> Profil
+                </button>
+                <button class="tab-autonome" data-panel="disponibilite">
+                    <i class="fas fa-calendar-check"></i> Disponibilités
+                </button>
+                <button class="tab-autonome" data-panel="historique">
+                    <i class="fas fa-history"></i> Historique
+                </button>
+                <button class="tab-autonome" data-panel="factures">
+                    <i class="fas fa-file-invoice"></i> Factures
+                </button>
+                <button class="tab-autonome" data-panel="alertes">
+                    <i class="fas fa-bell"></i> Alertes <span class="badge-count" id="countAlertes" style="display:none;">0</span>
+                </button>
+            </div>
+            
+            <!-- PANEL: MES TRAVAUX -->
+            <div id="panel-travaux" class="panel active">
+                <div class="card">
+                    <h3><i class="fas fa-briefcase" style="color:#1e88e5;"></i> Travaux Assignés</h3>
+                    <div id="mesTravauxList"></div>
+                </div>
+                <div class="card">
+                    <h3><i class="fas fa-exclamation-triangle" style="color:#ef5350;"></i> Travaux Urgents Disponibles</h3>
+                    <div id="travauxUrgentsList">
+                        <p style="color:#64748b;">Aucun travail urgent pour le moment</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PANEL: ÉQUIPE -->
+            <div id="panel-equipe" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-users" style="color:#1e88e5;"></i> Toute l'équipe</h3>
+                    <p style="color:#64748b;margin-bottom:15px;">Chaque couleur représente un autonome. Survolez pour voir les détails.</p>
+                    <div id="equipeList"></div>
+                </div>
+            </div>
+            
+            <!-- PANEL: PROFIL -->
+            <div id="panel-profil" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-user-cog" style="color:#1e88e5;"></i> Mon Profil</h3>
+                    <form id="profilForm">
+                        <div class="grid-2">
+                            <div class="form-group">
+                                <label>Nom complet</label>
+                                <input type="text" class="form-input" id="profilNom" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" class="form-input" id="profilEmail" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Téléphone</label>
+                                <input type="tel" class="form-input" id="profilTel">
+                            </div>
+                            <div class="form-group">
+                                <label>Nouveau mot de passe (laisser vide si inchangé)</label>
+                                <input type="password" class="form-input" id="profilPassword" minlength="6">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-tools"></i> Mes Compétences (skills)</label>
+                            <div class="skills-grid" id="skillsContainer"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Sauvegarder</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- PANEL: DISPONIBILITÉS -->
+            <div id="panel-disponibilite" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-calendar-check" style="color:#1e88e5;"></i> Mes Disponibilités Hebdomadaires</h3>
+                    <p style="color:#64748b;margin-bottom:15px;">
+                        Activez les jours où vous êtes disponible et définissez vos créneaux horaires.
+                        Les travaux hors de ces créneaux ne vous seront pas assignés.
+                    </p>
+                    <div class="dispo-grid" id="dispoGrid"></div>
+                    <button class="btn btn-primary" style="margin-top:20px;" onclick="saveDisponibilite()">
+                        <i class="fas fa-save"></i> Enregistrer disponibilités
+                    </button>
+                </div>
+            </div>
+            
+            <!-- PANEL: HISTORIQUE -->
+            <div id="panel-historique" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-history" style="color:#1e88e5;"></i> Historique des Travaux Complétés</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Date</th><th>Client</th><th>Service</th><th>Adresse</th><th>Statut</th></tr></thead>
+                            <tbody id="historiqueBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PANEL: FACTURES -->
+            <div id="panel-factures" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-file-invoice" style="color:#1e88e5;"></i> Mes Factures</h3>
+                    <p style="color:#64748b;margin-bottom:15px;">Gérez vos factures personnelles.</p>
+                    <form id="factureForm" style="margin-bottom:20px;">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Numéro</label>
+                                <input type="text" class="form-input" id="factNum" placeholder="FAC-2026-XXX" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input type="date" class="form-input" id="factDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Montant (€)</label>
+                                <input type="number" class="form-input" id="factMontant" step="0.01" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <input type="text" class="form-input" id="factDesc" placeholder="Prestation de service...">
+                        </div>
+                        <button type="submit" class="btn btn-success"><i class="fas fa-plus"></i> Ajouter</button>
+                    </form>
+                    <div class="table-container">
+                        <table>
+                            <thead><tr><th>Nº</th><th>Date</th><th>Description</th><th>Montant</th><th>Actions</th></tr></thead>
+                            <tbody id="facturesBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PANEL: ALERTES -->
+            <div id="panel-alertes" class="panel">
+                <div class="card">
+                    <h3><i class="fas fa-bell" style="color:#ef5350;"></i> Centre d'Alertes</h3>
+                    <div id="alertesList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // AUTONOMOS SYSTEM v2.3 — GOOGLE SHEETS + LOCAL
+        // ============================================
+        
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return String(unsafe).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+        }
+        
+        const STORAGE_KEY = 'jmnet_autonomos';
+        const ASIGNACIONES_KEY = 'jmnet_asignaciones';
+        const AUSENCIAS_KEY = 'jmnet_ausencias';
+        const FACTURAS_AUT_KEY = 'jmnet_facturas_autonomos';
+        const GOOGLE_URL = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec';
+        
+        let autonomos = [];
+        let asignaciones = [];
+        let ausencias = [];
+        let facturasAutonomos = [];
+        let currentUser = null;
+        let isOnline = false;
+        
+        const SKILLS_LIST = [
+            'nettoyage_regulier', 'nettoyage_profond', 'apres_travaux',
+            'vitres', 'tapis_moquette', 'desinfection',
+            'jardinage', 'petit_bricolage', 'conciergerie', 'visites_verification'
+        ];
+        
+        const SKILLS_LABELS = {
+            nettoyage_regulier: 'Nettoyage régulier',
+            nettoyage_profond: 'Nettoyage profond',
+            apres_travaux: 'Après travaux',
+            vitres: 'Vitres',
+            tapis_moquette: 'Tapis & Moquette',
+            desinfection: 'Désinfection',
+            jardinage: 'Jardinage',
+            petit_bricolage: 'Petit bricolage',
+            conciergerie: 'Conciergerie',
+            visites_verification: 'Visites vérification'
+        };
+        
+        const DAYS = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
+        const DAYS_LABELS = { lundi:'Lun', mardi:'Mar', mercredi:'Mer', jeudi:'Jeu', vendredi:'Ven', samedi:'Sam', dimanche:'Dim' };
+        
+        // ========== STORAGE LOCAL ==========
+        function loadFromLocal() {
+            try { 
+                const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+                if (data && data.length > 0) autonomos = data;
+            } catch(e) {}
+            try { 
+                const data = JSON.parse(localStorage.getItem(ASIGNACIONES_KEY));
+                if (data && data.length > 0) asignaciones = data;
+            } catch(e) {}
+            try { 
+                const data = JSON.parse(localStorage.getItem(AUSENCIAS_KEY));
+                if (data && data.length > 0) ausencias = data;
+            } catch(e) {}
+            try { 
+                const data = JSON.parse(localStorage.getItem(FACTURAS_AUT_KEY));
+                if (data && data.length > 0) facturasAutonomos = data;
+            } catch(e) {}
+        }
+        
+        function saveToLocal() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(autonomos));
+            localStorage.setItem(ASIGNACIONES_KEY, JSON.stringify(asignaciones));
+            localStorage.setItem(AUSENCIAS_KEY, JSON.stringify(ausencias));
+            localStorage.setItem(FACTURAS_AUT_KEY, JSON.stringify(facturasAutonomos));
+        }
+        
+        // ========== STORAGE SERVIDOR (GOOGLE SHEETS) ==========
+        function loadFromServer(sheetName, targetArray, callback) {
+            var cbName = 'aut_load_' + Date.now() + '_' + sheetName;
+            var scriptEl = document.createElement('script');
+            var timeout = setTimeout(function() {
+                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+                delete window[cbName];
+                if (callback) callback();
+            }, 8000);
+
+            window[cbName] = function(data) {
+                clearTimeout(timeout);
+                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+                delete window[cbName];
+                
+                if (data && Array.isArray(data) && data.length > 1) {
+                    var headers = data[0];
+                    var loaded = [];
+                    for (var i = 1; i < data.length; i++) {
+                        var row = {};
+                        for (var j = 0; j < headers.length; j++) {
+                            row[headers[j]] = data[i][j] || "";
+                        }
+                        if (typeof row.skills === 'string') try { row.skills = JSON.parse(row.skills); } catch(e) { row.skills = [row.skills]; }
+                        if (typeof row.disponibilidad === 'string') try { row.disponibilidad = JSON.parse(row.disponibilidad); } catch(e) { row.disponibilidad = {}; }
+                        if (!row.skills || !Array.isArray(row.skills)) row.skills = ['nettoyage_regulier'];
+                        if (!row.disponibilidad || typeof row.disponibilidad !== 'object') row.disponibilidad = {};
+                        row.maxHorasDia = parseInt(row.maxHorasDia) || 7;
+                        row.maxHorasSemana = parseInt(row.maxHorasSemana) || 35;
+                        row.balanceHorasSemana = parseInt(row.balanceHorasSemana) || 0;
+                        loaded.push(row);
+                    }
+                    if (loaded.length > 0) {
+                        targetArray.length = 0;
+                        loaded.forEach(function(item) { targetArray.push(item); });
+                    }
+                }
+                isOnline = true;
+                updateSyncBadge();
+                if (callback) callback();
+            };
+
+            scriptEl.src = GOOGLE_URL + '?sheet=' + sheetName + '&callback=' + cbName + '&t=' + Date.now();
+            scriptEl.async = true;
+            document.head.appendChild(scriptEl);
+        }
+
+        function saveToServer(data, sheetName) {
+            var flat = {};
+            for (var k in data) {
+                if (!data.hasOwnProperty(k)) continue;
+                if (k === 'skills' && Array.isArray(data[k])) flat[k] = JSON.stringify(data[k]);
+                else if (k === 'disponibilidad' && typeof data[k] === 'object') flat[k] = JSON.stringify(data[k]);
+                else flat[k] = data[k];
+            }
+            var img = new Image();
+            img.src = GOOGLE_URL + '?sheet=' + sheetName + '&data=' + encodeURIComponent(JSON.stringify([flat])) + '&t=' + Date.now();
+        }
+
+        function updateSyncBadge() {
+            var badge = document.getElementById('syncBadge');
+            if (badge) {
+                badge.className = 'sync-badge ' + (isOnline ? 'sync-online' : 'sync-offline');
+                badge.innerHTML = isOnline ? '<i class="fas fa-cloud"></i> Connecté' : '<i class="fas fa-wifi"></i> Local';
+            }
+        }
+
+        function saveAll() {
+            saveToLocal();
+            if (currentUser) {
+                var idx = autonomos.findIndex(function(a) { return a.id === currentUser.id; });
+                if (idx >= 0) saveToServer(autonomos[idx], 'autonomos');
+            }
+        }
+        
+        // ========== AUTH LOCAL ==========
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = autonomos.find(a => a.email === email && a.password === password);
+            if (!user) {
+                showNotification('❌ Identifiants incorrects', 'error');
+                return;
+            }
+            
+            currentUser = user;
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('headerName').textContent = currentUser.nom;
+            
+            // Cargar asignaciones desde servidor
+            loadFromServer('asignaciones', asignaciones, function() {
+                saveToLocal();
+                initDashboard();
+                showNotification('✅ Bienvenue ' + currentUser.nom + ' !', 'success');
+            });
+        });
+        
+        document.getElementById('showRegister').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'block';
+        });
+        
+        document.getElementById('showLogin').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+        });
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('loginForm').reset();
+        }
+        
+        // ========== REGISTER ==========
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nom = document.getElementById('regNom').value.trim();
+            const email = document.getElementById('regEmail').value.trim().toLowerCase();
+            const tel = document.getElementById('regTel').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            if (password.length < 6) {
+                showNotification('⚠️ Le mot de passe doit contenir au moins 6 caractères', 'error');
+                return;
+            }
+            
+            const colors = ['#1e88e5','#43a047','#fb8c00','#ef5350','#8e24aa','#00acc1','#d81b60','#3949ab'];
+            const nuevo = {
+                id: 'AUT-' + Date.now(),
+                nom: nom,
+                email: email,
+                password: password,
+                telephone: tel,
+                skills: ['nettoyage_regulier'],
+                disponibilidad: {},
+                color: colors[Math.floor(Math.random() * colors.length)],
+                tipo: 'regular',
+                estado: 'pendiente',
+                maxHorasDia: 7,
+                maxHorasSemana: 35,
+                balanceHorasSemana: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            autonomos.push(nuevo);
+            saveAll();
+            saveToServer(nuevo, 'autonomos');
+            
+            showNotification('✅ Demande envoyée ! Votre compte sera activé par JM Net.', 'success');
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('registerForm').reset();
+        });
+        
+        // ========== DASHBOARD ==========
+        function initDashboard() {
+            renderAll();
+            initTabs();
+            initProfileForm();
+            renderDisponibilidad();
+            document.getElementById('profilNom').value = currentUser.nom || '';
+            document.getElementById('profilEmail').value = currentUser.email || '';
+            if (currentUser.telephone) document.getElementById('profilTel').value = currentUser.telephone;
+        }
+        
+        function renderAll() {
+            renderTravaux();
+            renderTravauxUrgents();
+            renderEquipe();
+            renderAlertes();
+            renderHistorique();
+            renderFactures();
+            updateCounts();
+        }
+        
+        function updateCounts() {
+            if (!currentUser) return;
+            const travaux = asignaciones.filter(a => a.idAutonomo === currentUser.id && a.estado === 'asignado');
+            const cT = document.getElementById('countTravaux');
+            if (cT) { cT.textContent = travaux.length; cT.style.display = travaux.length > 0 ? 'inline' : 'none'; }
+            
+            const urgentes = asignaciones.filter(a => a.estado === 'urgente' && puedeHacerTrabajo(currentUser, a));
+            const cA = document.getElementById('countAlertes');
+            if (cA) { cA.textContent = urgentes.length; cA.style.display = urgentes.length > 0 ? 'inline' : 'none'; }
+            
+            const badgeU = document.getElementById('badgeUrgence');
+            if (badgeU) badgeU.style.display = urgentes.length > 0 ? 'inline' : 'none';
+        }
+        
+        // ========== TABS ==========
+        function initTabs() {
+            document.querySelectorAll('#tabsContainer .tab-autonome').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('#tabsContainer .tab-autonome').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                    this.classList.add('active');
+                    const panelId = 'panel-' + this.dataset.panel;
+                    const panel = document.getElementById(panelId);
+                    if (panel) panel.classList.add('active');
+                });
+            });
+        }
+        
+        // ========== DISPONIBILIDAD ==========
+        function renderDisponibilidad() {
+            const grid = document.getElementById('dispoGrid');
+            let html = '';
+            DAYS.forEach(day => {
+                const d = (currentUser.disponibilidad && currentUser.disponibilidad[day]) || { activo: false, inicio: null, fin: null };
+                html += `
+                <div class="dispo-day ${d.activo ? 'active' : 'inactive'}">
+                    <div class="day-name">${escapeHtml(DAYS_LABELS[day])}</div>
+                    <label style="font-size:0.7rem;">
+                        <input type="checkbox" ${d.activo ? 'checked' : ''} onchange="toggleDay('${day}', this.checked)" style="margin-bottom:5px;"> Actif
+                    </label>
+                    <input type="time" class="time-input" value="${d.inicio || '08:00'}" ${!d.activo ? 'disabled' : ''} 
+                           onchange="updateDayTime('${day}', 'inicio', this.value)" title="Début">
+                    <span style="font-size:0.7rem;">à</span>
+                    <input type="time" class="time-input" value="${d.fin || '15:00'}" ${!d.activo ? 'disabled' : ''} 
+                           onchange="updateDayTime('${day}', 'fin', this.value)" title="Fin">
+                </div>`;
+            });
+            grid.innerHTML = html;
+        }
+        
+        function toggleDay(day, active) {
+            if (!currentUser) return;
+            if (!currentUser.disponibilidad) currentUser.disponibilidad = {};
+            if (!currentUser.disponibilidad[day]) currentUser.disponibilidad[day] = {};
+            currentUser.disponibilidad[day].activo = active;
+            if (!active) { currentUser.disponibilidad[day].inicio = null; currentUser.disponibilidad[day].fin = null; }
+            else { currentUser.disponibilidad[day].inicio = currentUser.disponibilidad[day].inicio || '08:00'; currentUser.disponibilidad[day].fin = currentUser.disponibilidad[day].fin || '15:00'; }
+            renderDisponibilidad();
+        }
+        
+        function updateDayTime(day, field, value) {
+            if (!currentUser) return;
+            if (!currentUser.disponibilidad) currentUser.disponibilidad = {};
+            if (!currentUser.disponibilidad[day]) currentUser.disponibilidad[day] = { activo: true };
+            currentUser.disponibilidad[day][field] = value;
+        }
+        
+        function saveDisponibilite() {
+            const idx = autonomos.findIndex(a => a.id === currentUser.id);
+            if (idx >= 0) {
+                autonomos[idx].disponibilidad = currentUser.disponibilidad;
+                saveAll();
+                showNotification('✅ Disponibilités enregistrées !', 'success');
+            }
+        }
+        
+        // ========== PROFILE ==========
+        function initProfileForm() {
+            const container = document.getElementById('skillsContainer');
+            container.innerHTML = SKILLS_LIST.map(s => {
+                const selected = (currentUser.skills || []).includes(s);
+                return `<span class="skill-tag ${selected ? 'selected' : ''}" data-skill="${escapeHtml(s)}" onclick="toggleSkill('${escapeHtml(s)}', this)">${escapeHtml(SKILLS_LABELS[s])}</span>`;
+            }).join('');
+        }
+        
+        function toggleSkill(skill, el) {
+            if (!currentUser) return;
+            if (!currentUser.skills) currentUser.skills = [];
+            if (currentUser.skills.includes(skill)) {
+                currentUser.skills = currentUser.skills.filter(s => s !== skill);
+                el.classList.remove('selected');
+            } else {
+                currentUser.skills.push(skill);
+                el.classList.add('selected');
+            }
+        }
+        
+        document.getElementById('profilForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const tel = document.getElementById('profilTel').value.trim();
+            const pwd = document.getElementById('profilPassword').value;
+            
+            const idx = autonomos.findIndex(a => a.id === currentUser.id);
+            if (idx >= 0) {
+                autonomos[idx].telephone = tel;
+                autonomos[idx].skills = [...(currentUser.skills || [])];
+                if (pwd) autonomos[idx].password = pwd;
+                currentUser = autonomos[idx];
+                saveAll();
+                showNotification('✅ Profil mis à jour !', 'success');
+            }
+        });
+        
+        // ========== TRAVAUX ==========
+        function puedeHacerTrabajo(autonomo, trabajo) {
+            if (!autonomo || autonomo.estado !== 'activo') return false;
+            if (!autonomo.skills || !autonomo.skills.includes(trabajo.tipo)) return false;
+            
+            const date = new Date(trabajo.fecha + 'T00:00:00');
+            const dayIdx = date.getDay() === 0 ? 6 : date.getDay() - 1;
+            const dayName = DAYS[dayIdx];
+            const dispo = (autonomo.disponibilidad && autonomo.disponibilidad[dayName]) || { activo: false };
+            
+            if (!dispo.activo) return false;
+            
+            const horaTrabajo = trabajo.horaInicio || '08:00';
+            if (dispo.inicio && horaTrabajo < dispo.inicio) return false;
+            if (dispo.fin && horaTrabajo >= dispo.fin) return false;
+            
+            const horasAsignadasDia = asignaciones
+                .filter(a => a.idAutonomo === autonomo.id && a.fecha === trabajo.fecha && a.estado === 'asignado')
+                .reduce((s, a) => s + (a.duracion || 2), 0);
+            if (horasAsignadasDia + (trabajo.duracion || 2) > (autonomo.maxHorasDia || 7)) return false;
+            
+            return true;
+        }
+        
+        function renderTravaux() {
+            if (!currentUser) return;
+            const misTravaux = asignaciones.filter(a => a.idAutonomo === currentUser.id && (a.estado === 'asignado' || a.estado === 'en_curso'));
+            const container = document.getElementById('mesTravauxList');
+            
+            if (misTravaux.length === 0) {
+                container.innerHTML = '<p style="color:#64748b;padding:20px;">Aucun travail assigné pour le moment</p>';
+                return;
+            }
+            
+            container.innerHTML = misTravaux.sort((a,b) => a.fecha.localeCompare(b.fecha)).map(t => `
+                <div class="travail-card">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+                        <div>
+                            <strong>📅 ${escapeHtml(t.fecha)} · 🕐 ${escapeHtml(t.horaInicio || '--')}</strong>
+                            <span style="margin-left:10px;background:#e8f0fe;color:#1e88e5;padding:2px 10px;border-radius:10px;font-size:0.75rem;">${escapeHtml(SKILLS_LABELS[t.tipo] || t.tipo)}</span>
+                        </div>
+                        <button class="btn btn-success" style="font-size:0.7rem;padding:6px 12px;" onclick="reportarCompletado('${escapeHtml(t.id)}')">
+                            <i class="fas fa-check"></i> Terminé
+                        </button>
+                    </div>
+                    <p style="margin-top:5px;">📍 ${escapeHtml(t.direccion || 'Adresse non précisée')}</p>
+                    <p style="font-size:0.75rem;color:#64748b;">Client: ${escapeHtml(t.cliente || 'N/A')} · Durée: ${t.duracion || 2}h</p>
+                </div>
+            `).join('');
+        }
+        
+        function renderTravauxUrgents() {
+            if (!currentUser) return;
+            const urgentes = asignaciones.filter(a => a.estado === 'urgente' && puedeHacerTrabajo(currentUser, a));
+            const container = document.getElementById('travauxUrgentsList');
+            
+            if (urgentes.length === 0) {
+                container.innerHTML = '<p style="color:#64748b;">Aucun travail urgent pour le moment</p>';
+                return;
+            }
+            
+            container.innerHTML = urgentes.map(t => `
+                <div class="travail-card urgent" style="border-left-color:#ef5350;background:#fff5f5;">
+                    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:center;">
+                        <div>
+                            <strong>🚨 URGENT · 📅 ${escapeHtml(t.fecha)} · 🕐 ${escapeHtml(t.horaInicio || '--')}</strong>
+                            <span style="margin-left:10px;background:#ffebee;color:#c62828;padding:2px 10px;border-radius:10px;font-size:0.75rem;">${escapeHtml(SKILLS_LABELS[t.tipo] || t.tipo)}</span>
+                        </div>
+                        <button class="btn btn-danger" style="font-size:0.75rem;padding:8px 16px;" onclick="aceptarUrgencia('${escapeHtml(t.id)}')">
+                            <i class="fas fa-hand-paper"></i> Je le prends !
+                        </button>
+                    </div>
+                    <p style="margin-top:5px;">📍 ${escapeHtml(t.direccion || 'Adresse non précisée')}</p>
+                    <p style="font-size:0.75rem;color:#64748b;">Client: ${escapeHtml(t.cliente || 'N/A')}</p>
+                </div>
+            `).join('');
+        }
+        
+        function reportarCompletado(id) {
+            const idx = asignaciones.findIndex(a => a.id === id);
+            if (idx >= 0) {
+                asignaciones[idx].estado = 'completado';
+                asignaciones[idx].fechaCompletado = new Date().toISOString();
+                saveAll();
+                saveToServer(asignaciones[idx], 'asignaciones');
+                renderAll();
+                showNotification('✅ Travail marqué comme terminé !', 'success');
+            }
+        }
+        
+        function aceptarUrgencia(id) {
+            const idx = asignaciones.findIndex(a => a.id === id);
+            if (idx >= 0 && currentUser) {
+                asignaciones[idx].idAutonomo = currentUser.id;
+                asignaciones[idx].estado = 'asignado';
+                asignaciones[idx].fechaAsignacion = new Date().toISOString();
+                
+                currentUser.balanceHorasSemana = (currentUser.balanceHorasSemana || 0) + (asignaciones[idx].duracion || 2);
+                const aIdx = autonomos.findIndex(a => a.id === currentUser.id);
+                if (aIdx >= 0) autonomos[aIdx] = currentUser;
+                
+                saveAll();
+                saveToServer(asignaciones[idx], 'asignaciones');
+                renderAll();
+                showNotification('✅ Travail urgent accepté ! Il vous est assigné.', 'success');
+            }
+        }
+        
+        // ========== ÉQUIPE ==========
+        function renderEquipe() {
+            const container = document.getElementById('equipeList');
+            const activos = autonomos.filter(a => a.estado === 'activo');
+            if (activos.length === 0) {
+                container.innerHTML = '<p style="color:#64748b;">Aucun membre d\'équipe actif</p>';
+                return;
+            }
+            container.innerHTML = activos.map(a => {
+                const misTravaux = asignaciones.filter(as => as.idAutonomo === a.id && as.estado === 'asignado').length;
+                const hoy = new Date().toISOString().split('T')[0];
+                const hoyTravaux = asignaciones.filter(as => as.idAutonomo === a.id && as.fecha === hoy).length;
+                return `
+                <div class="equipe-member" style="border-left-color:${escapeHtml(a.color || '#1e88e5')};" title="${escapeHtml(a.nom)} · ${escapeHtml(a.email || '')} · ${escapeHtml(a.telephone || '')}">
+                    <div class="equipe-dot" style="background:${escapeHtml(a.color || '#1e88e5')};"></div>
+                    <div style="flex:1;">
+                        <strong>${escapeHtml(a.nom)}</strong>
+                        <span style="font-size:0.7rem;color:#64748b;margin-left:8px;">${escapeHtml(a.tipo || 'regular')}</span>
+                    </div>
+                    <div style="text-align:right;font-size:0.8rem;">
+                        <div>📋 ${misTravaux} travaux</div>
+                        <div>📅 Aujourd'hui: ${hoyTravaux}</div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        // ========== ALERTES ==========
+        function renderAlertes() {
+            if (!currentUser) return;
+            const urgentes = asignaciones.filter(a => a.estado === 'urgente' && puedeHacerTrabajo(currentUser, a));
+            const hoy = new Date().toISOString().split('T')[0];
+            const misHoy = asignaciones.filter(a => a.idAutonomo === currentUser.id && a.fecha === hoy && a.estado === 'asignado');
+            
+            let html = '';
+            if (urgentes.length > 0) {
+                html += urgentes.map(t => `
+                <div style="background:#fff5f5;border-left:4px solid #ef5350;padding:15px;border-radius:12px;margin-bottom:10px;">
+                    <strong>🚨 TRAVAIL URGENT</strong><br>
+                    📅 ${escapeHtml(t.fecha)} · 🕐 ${escapeHtml(t.horaInicio)} · ${escapeHtml(SKILLS_LABELS[t.tipo] || t.tipo)}<br>
+                    📍 ${escapeHtml(t.direccion || '')}
+                    <br><button class="btn btn-danger" style="margin-top:8px;font-size:0.75rem;" onclick="aceptarUrgencia('${escapeHtml(t.id)}')">Je le prends !</button>
+                </div>`).join('');
+            }
+            if (misHoy.length > 0) {
+                html += `<div style="background:#e8f5e9;border-left:4px solid #43a047;padding:15px;border-radius:12px;margin-bottom:10px;">
+                    <strong>📅 Aujourd'hui (${hoy})</strong><br>${misHoy.length} travail(aux) assigné(s)</div>`;
+            }
+            if (!html) html = '<p style="color:#64748b;">Aucune alerte</p>';
+            document.getElementById('alertesList').innerHTML = html;
+        }
+        
+        // ========== HISTORIQUE ==========
+        function renderHistorique() {
+            if (!currentUser) return;
+            const completados = asignaciones.filter(a => a.idAutonomo === currentUser.id && a.estado === 'completado');
+            const tbody = document.getElementById('historiqueBody');
+            if (completados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Aucun historique</td></tr>';
+                return;
+            }
+            tbody.innerHTML = completados.sort((a,b) => b.fecha.localeCompare(a.fecha)).map(t => `
+                <tr>
+                    <td>${escapeHtml(t.fecha)}</td>
+                    <td>${escapeHtml(t.cliente || 'N/A')}</td>
+                    <td>${escapeHtml(SKILLS_LABELS[t.tipo] || t.tipo)}</td>
+                    <td>${escapeHtml(t.direccion || '')}</td>
+                    <td><span style="color:#43a047;">✅ ${t.fechaCompletado ? new Date(t.fechaCompletado).toLocaleDateString('fr-FR') : ''}</span></td>
+                </tr>
+            `).join('');
+        }
+        
+        // ========== FACTURES ==========
+        function renderFactures() {
+            if (!currentUser) return;
+            const misFacturas = facturasAutonomos.filter(f => f.idAutonomo === currentUser.id);
+            const tbody = document.getElementById('facturesBody');
+            if (misFacturas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Aucune facture</td></tr>';
+                return;
+            }
+            tbody.innerHTML = misFacturas.map((f, i) => `
+                <tr>
+                    <td>${escapeHtml(f.numero)}</td>
+                    <td>${escapeHtml(f.date)}</td>
+                    <td>${escapeHtml(f.description)}</td>
+                    <td>${(f.montant || 0).toFixed(2)} €</td>
+                    <td><button class="btn btn-danger" style="font-size:0.7rem;padding:4px 10px;" onclick="deleteFacture(${i})"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+        
+        document.getElementById('factureForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+            facturasAutonomos.push({
+                idAutonomo: currentUser.id,
+                numero: document.getElementById('factNum').value.trim(),
+                date: document.getElementById('factDate').value,
+                description: document.getElementById('factDesc').value.trim(),
+                montant: parseFloat(document.getElementById('factMontant').value) || 0,
+                createdAt: new Date().toISOString()
+            });
+            saveAll();
+            renderFactures();
+            this.reset();
+            showNotification('✅ Facture ajoutée', 'success');
+        });
+        
+        function deleteFacture(index) {
+            facturasAutonomos.splice(index, 1);
+            saveAll();
+            renderFactures();
+            showNotification('🗑️ Facture supprimée', 'info');
+        }
+        
+        // ========== NOTIFICATIONS ==========
+        function showNotification(msg, type) {
+            const n = document.createElement('div');
+            n.className = 'notification';
+            n.style.background = type === 'success' ? '#43a047' : type === 'error' ? '#ef5350' : '#1e88e5';
+            n.innerHTML = '<i class="fas ' + (type==='success'?'fa-check-circle':'fa-info-circle') + '" style="margin-right:8px;"></i>' + msg;
+            document.body.appendChild(n);
+            setTimeout(() => { n.style.opacity='0'; n.style.transition='opacity 0.3s'; setTimeout(() => n.remove(), 300); }, 4000);
+        }
+        
+        // ========== POLLING ==========
+        setInterval(() => {
+            if (currentUser) {
+                loadFromLocal();
+                loadFromServer('asignaciones', asignaciones, function() {
+                    saveToLocal();
+                    renderAll();
+                    updateCounts();
+                });
+            }
+        }, 30000);
+        
+        // ========== INIT ==========
+        (function() {
+            loadFromLocal();
+            loadFromServer('autonomos', autonomos, function() {
+                saveToLocal();
+                updateSyncBadge();
+            });
+            console.log('✅ [Autonomes v2.3] Initialisé · Google Sheets + Local');
+        })();
+    </script>
+</body>
+</html>

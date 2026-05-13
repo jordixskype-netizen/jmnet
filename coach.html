@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JM Net · Coach Orquestateur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            padding: 15px;
+            color: #1a2a3a;
+            font-size: 0.9rem;
+        }
+        
+        .coach-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .coach-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1a2a3a;
+        }
+        .coach-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-primary { background: #1e88e5; color: white; }
+        .btn-success { background: #43a047; color: white; }
+        .btn-warning { background: #fb8c00; color: white; }
+        .btn-danger { background: #ef5350; color: white; }
+        .btn-outline { background: white; border: 1px solid #e2e8f0; color: #1a2a3a; }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .btn-sm { padding: 4px 10px; font-size: 0.7rem; }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .stat-mini {
+            background: white;
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+        .stat-mini .stat-val { font-size: 1.4rem; font-weight: 700; }
+        .stat-mini .stat-lbl { font-size: 0.7rem; color: #64748b; }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 15px;
+        }
+        .cal-day-header {
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            padding: 6px;
+            color: #1e88e5;
+        }
+        .cal-day {
+            background: white;
+            border-radius: 10px;
+            padding: 6px;
+            min-height: 80px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.7rem;
+            position: relative;
+        }
+        .cal-day:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .cal-day.today { border: 2px solid #1e88e5; background: #e3f2fd; }
+        .cal-day .day-num { font-weight: 700; margin-bottom: 4px; }
+        .cal-day .asign-item {
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-bottom: 2px;
+            font-size: 0.65rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .panel-section {
+            background: white;
+            border-radius: 14px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+        .panel-section h3 { font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        
+        .autonome-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 10px;
+            margin-bottom: 4px;
+            background: #f8fafc;
+            transition: all 0.2s;
+            flex-wrap: wrap;
+        }
+        .autonome-row:hover { background: #f1f5f9; }
+        .autonome-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .autonome-row .autonome-name { font-weight: 600; font-size: 0.8rem; }
+        .autonome-row .autonome-info { font-size: 0.7rem; color: #64748b; }
+        
+        .ausencia-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+        .ausencia-maladie { background: #ffebee; color: #c62828; }
+        .ausencia-vacances { background: #e8f5e9; color: #2e7d32; }
+        .ausencia-familial { background: #fff3e0; color: #e65100; }
+        
+        .flash-msg {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            animation: flashIn 0.4s ease;
+        }
+        @keyframes flashIn { from{opacity:0;transform:translateY(-5px)} to{opacity:1;transform:translateY(0)} }
+        .flash-success { background: #e8f5e9; color: #2e7d32; border-left: 3px solid #43a047; }
+        .flash-error { background: #ffebee; color: #c62828; border-left: 3px solid #ef5350; }
+        .flash-warning { background: #fff3e0; color: #e65100; border-left: 3px solid #fb8c00; }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 18px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        .modal-box h3 { margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 4px; }
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-input:focus { outline: none; border-color: #1e88e5; }
+        
+        @media (max-width: 768px) {
+            .stats-row { grid-template-columns: repeat(2,1fr); }
+            .calendar-grid { gap: 2px; }
+            .cal-day { min-height: 60px; padding: 3px; font-size: 0.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="coachContainer">
+        <!-- HEADER -->
+        <div class="coach-header">
+            <div class="coach-title">
+                <span style="font-size:1.3rem;">🧠</span> Coach · Orquestateur
+            </div>
+            <div class="coach-actions">
+                <button class="btn btn-outline btn-sm" onclick="recalcularTodo()" title="Recalculer toutes les assignations">
+                    <i class="fas fa-sync-alt"></i> Recalculer
+                </button>
+                <button class="btn btn-warning btn-sm" onclick="abrirModalAusencia()">
+                    <i class="fas fa-user-clock"></i> Signaler absence
+                </button>
+                <button class="btn btn-primary btn-sm" onclick="abrirModalAsignacion()">
+                    <i class="fas fa-plus"></i> Assigner manuellement
+                </button>
+            </div>
+        </div>
+        
+        <!-- FLASH MESSAGE -->
+        <div id="flashMessage"></div>
+        
+        <!-- STATS -->
+        <div class="stats-row">
+            <div class="stat-mini">
+                <div class="stat-val" id="statActivos" style="color:#43a047;">0</div>
+                <div class="stat-lbl">Autonomes actifs</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-val" id="statAsignados" style="color:#1e88e5;">0</div>
+                <div class="stat-lbl">Travaux assignés</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-val" id="statUrgentes" style="color:#ef5350;">0</div>
+                <div class="stat-lbl">En attente urgent</div>
+            </div>
+            <div class="stat-mini">
+                <div class="stat-val" id="statAusentes" style="color:#fb8c00;">0</div>
+                <div class="stat-lbl">Absents aujourd'hui</div>
+            </div>
+        </div>
+        
+        <!-- CALENDARIO SEMANAL -->
+        <div class="panel-section">
+            <h3><i class="fas fa-calendar-week" style="color:#1e88e5;"></i> <span id="semanaLabel">Cette semaine</span></h3>
+            <div style="display:flex;gap:8px;margin-bottom:10px;">
+                <button class="btn btn-outline btn-sm" onclick="cambiarSemana(-1)"><i class="fas fa-chevron-left"></i></button>
+                <button class="btn btn-outline btn-sm" onclick="cambiarSemana(0)">Aujourd'hui</button>
+                <button class="btn btn-outline btn-sm" onclick="cambiarSemana(1)"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="calendar-grid" id="coachCalendar"></div>
+        </div>
+        
+        <!-- AUTÓNOMOS Y SUS CARGAS -->
+        <div class="panel-section">
+            <h3><i class="fas fa-users" style="color:#1e88e5;"></i> Équipe & Charges</h3>
+            <div id="equipeCargas"></div>
+        </div>
+        
+        <!-- TRABAJOS SIN ASIGNAR -->
+        <div class="panel-section" id="panelSinAsignar">
+            <h3><i class="fas fa-exclamation-triangle" style="color:#fb8c00;"></i> Travaux sans autonome</h3>
+            <div id="travauxSinAsignarList"></div>
+        </div>
+        
+        <!-- AUSENCIAS ACTIVAS -->
+        <div class="panel-section" id="panelAusencias">
+            <h3><i class="fas fa-user-clock" style="color:#fb8c00;"></i> Absences en cours</h3>
+            <div id="ausenciasList"></div>
+        </div>
+    </div>
+    
+    <!-- MODAL: ASIGNACIÓN MANUAL -->
+    <div class="modal-overlay" id="modalAsignacion">
+        <div class="modal-box">
+            <h3>📋 Assigner un travail manuellement</h3>
+            <form id="formAsignacionManual">
+                <div class="form-group">
+                    <label>ID Demande (du Manager)</label>
+                    <input type="text" class="form-input" id="asigIdDemande" placeholder="ex: 1712345678" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" class="form-input" id="asigFecha" required>
+                </div>
+                <div class="form-group">
+                    <label>Heure début</label>
+                    <input type="time" class="form-input" id="asigHora" value="09:00" required>
+                </div>
+                <div class="form-group">
+                    <label>Type de service</label>
+                    <select class="form-input" id="asigTipo" required>
+                        <option value="">-- Choisir --</option>
+                        <option value="nettoyage_regulier">Nettoyage régulier</option>
+                        <option value="nettoyage_profond">Nettoyage profond</option>
+                        <option value="apres_travaux">Après travaux</option>
+                        <option value="vitres">Vitres</option>
+                        <option value="tapis_moquette">Tapis & Moquette</option>
+                        <option value="desinfection">Désinfection</option>
+                        <option value="jardinage">Jardinage</option>
+                        <option value="petit_bricolage">Petit bricolage</option>
+                        <option value="conciergerie">Conciergerie</option>
+                        <option value="visites_verification">Visites vérification</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Durée estimée (heures)</label>
+                    <input type="number" class="form-input" id="asigDuracion" value="2" min="1" max="8" required>
+                </div>
+                <div class="form-group">
+                    <label>Adresse / Client</label>
+                    <input type="text" class="form-input" id="asigDireccion" placeholder="Client + adresse">
+                </div>
+                <div class="form-group">
+                    <label>Autonome</label>
+                    <select class="form-input" id="asigAutonomo" required>
+                        <option value="">-- Choisir --</option>
+                    </select>
+                </div>
+                <div style="display:flex;gap:10px;margin-top:15px;">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Assigner</button>
+                    <button type="button" class="btn btn-outline" onclick="cerrarModal('modalAsignacion')">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL: REPORTAR AUSENCIA -->
+    <div class="modal-overlay" id="modalAusencia">
+        <div class="modal-box">
+            <h3>🚨 Signaler une absence</h3>
+            <form id="formAusencia">
+                <div class="form-group">
+                    <label>Autonome</label>
+                    <select class="form-input" id="ausAutonomo" required>
+                        <option value="">-- Choisir --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Type d'absence</label>
+                    <select class="form-input" id="ausTipo" required>
+                        <option value="maladie">🤒 Maladie</option>
+                        <option value="vacances">🏖️ Vacances</option>
+                        <option value="familial">👶 Familial</option>
+                        <option value="lesion">🤕 Lésion</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date début</label>
+                    <input type="date" class="form-input" id="ausInicio" required>
+                </div>
+                <div class="form-group">
+                    <label>Date fin</label>
+                    <input type="date" class="form-input" id="ausFin" required>
+                </div>
+                <div class="form-group">
+                    <label>Motif (visible par l'équipe)</label>
+                    <input type="text" class="form-input" id="ausMotivo" placeholder="Ex: Gastro, vacances en famille...">
+                </div>
+                <div style="display:flex;gap:10px;margin-top:15px;">
+                    <button type="submit" class="btn btn-warning"><i class="fas fa-user-clock"></i> Signaler</button>
+                    <button type="button" class="btn btn-outline" onclick="cerrarModal('modalAusencia')">Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // COACH SYSTEM v2.2 — PROXY A TRAVÉS DE ADMIN
+        // ============================================
+        
+        const STORAGE_AUTONOMOS = 'jmnet_autonomos';
+        const STORAGE_ASIGNACIONES = 'jmnet_asignaciones';
+        const STORAGE_AUSENCIAS = 'jmnet_ausencias';
+        const STORAGE_DEMANDES = 'jmnet_demandes';
+        const API_KEY = 'JMNet_2026_Secure!66';
+        
+        const SKILLS_LABELS = {
+            nettoyage_regulier:'Nettoyage rég.', nettoyage_profond:'Nettoyage profond',
+            apres_travaux:'Après travaux', vitres:'Vitres', tapis_moquette:'Tapis & Moquette',
+            desinfection:'Désinfection', jardinage:'Jardinage', petit_bricolage:'Petit bricolage',
+            conciergerie:'Conciergerie', visites_verification:'Visites vérif.'
+        };
+        
+        const DAYS = ['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche'];
+        const DAYS_SHORT = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+        
+        let autonomos = [];
+        let asignaciones = [];
+        let ausencias = [];
+        let demandes = [];
+        let currentWeekOffset = 0;
+        
+        // ========== PROXY CORS (a través de admin.html padre) ==========
+        var coachPendingRequests = {};
+
+        window.addEventListener('message', function(event) {
+            var d = event.data;
+            // Recibir respuestas del proxy (reenviadas por admin.html)
+            if (d && d.id && typeof d.id === 'string' && d.id.startsWith('coach-') && coachPendingRequests[d.id]) {
+                coachPendingRequests[d.id](d.success, d.data);
+                delete coachPendingRequests[d.id];
+            }
+            // Recibir orden de refresh del padre
+            if (event.data === 'refresh') {
+                poll();
+            }
+        });
+
+        function coachProxyFetch(url, options) {
+            options = options || {};
+            return new Promise(function(resolve, reject) {
+                var id = 'coach-' + Date.now() + Math.random();
+                coachPendingRequests[id] = function(success, data) {
+                    if (success) {
+                        try {
+                            var parsed = JSON.parse(data);
+                            resolve({ ok: true, json: function() { return parsed; }, text: function() { return data; } });
+                        } catch(e) {
+                            reject(new Error('JSON invalido: ' + e.message));
+                        }
+                    } else {
+                        reject(new Error(data || 'Error del proxy'));
+                    }
+                };
+                // Enviar petición al padre (admin.html) para que la reenvíe al proxy iframe
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        id: id, url: url,
+                        method: options.method || 'GET',
+                        body: options.body || null,
+                        headers: options.headers || {}
+                    }, '*');
+                } else {
+                    reject(new Error('No hay conexión con el padre (admin.html)'));
+                }
+            });
+        }
+        
+        // ========== STORAGE ==========
+        function loadAll() {
+            try { autonomos = JSON.parse(localStorage.getItem(STORAGE_AUTONOMOS)) || []; } catch(e) { autonomos=[]; }
+            try { asignaciones = JSON.parse(localStorage.getItem(STORAGE_ASIGNACIONES)) || []; } catch(e) { asignaciones=[]; }
+            try { ausencias = JSON.parse(localStorage.getItem(STORAGE_AUSENCIAS)) || []; } catch(e) { ausencias=[]; }
+            try { demandes = JSON.parse(localStorage.getItem(STORAGE_DEMANDES)) || []; } catch(e) { demandes=[]; }
+        }
+        
+        function saveAll() {
+            localStorage.setItem(STORAGE_ASIGNACIONES, JSON.stringify(asignaciones));
+            localStorage.setItem(STORAGE_AUSENCIAS, JSON.stringify(ausencias));
+            syncToServer();
+        }
+        
+        async function syncToServer() {
+            try {
+                const csrf = sessionStorage.getItem('csrf_token') || '';
+                await coachProxyFetch('https://jmnet-services.free.nf/api.php?api_key=' + API_KEY, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-API-Key': API_KEY,
+                        'X-CSRF-Token': csrf
+                    },
+                    body: JSON.stringify({
+                        asignaciones: asignaciones,
+                        ausencias: ausencias,
+                        autonomos: autonomos
+                    })
+                });
+            } catch(e) {
+                console.log('Sync serveur coach: indisponible');
+            }
+        }
+        
+        async function loadFromServer() {
+            try {
+                const resp = await coachProxyFetch('https://jmnet-services.free.nf/api.php?api_key=' + API_KEY, {
+                    headers: { 'X-API-Key': API_KEY }
+                });
+                const data = await resp.json();
+                if (data) {
+                    if (data.autonomos && data.autonomos.length > 0) autonomos = data.autonomos;
+                    if (data.asignaciones && data.asignaciones.length > 0) asignaciones = data.asignaciones;
+                    if (data.ausencias && data.ausencias.length > 0) ausencias = data.ausencias;
+                }
+            } catch(e) {
+                console.log('Coach: Serveur inaccessible, données locales utilisées');
+            }
+        }
+        
+        // ========== UTILIDADES ==========
+        function getWeekDates(offset) {
+            const now = new Date();
+            now.setDate(now.getDate() + (offset * 7));
+            const day = now.getDay();
+            const monday = new Date(now);
+            monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const d = new Date(monday);
+                d.setDate(monday.getDate() + i);
+                dates.push(d.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
+        
+        function estaAusente(autonomoId, fecha) {
+            return ausencias.some(a => a.idAutonomo === autonomoId && fecha >= a.fechaInicio && fecha <= a.fechaFin);
+        }
+        
+        function mapearTipo(servicio) {
+            if (!servicio) return 'nettoyage_regulier';
+            const s = servicio.toLowerCase();
+            if (s.includes('regulier') || s.includes('régulier')) return 'nettoyage_regulier';
+            if (s.includes('profond')) return 'nettoyage_profond';
+            if (s.includes('travaux') || s.includes('chantier')) return 'apres_travaux';
+            if (s.includes('vitre')) return 'vitres';
+            if (s.includes('tapis') || s.includes('moquette')) return 'tapis_moquette';
+            if (s.includes('desinfect')) return 'desinfection';
+            if (s.includes('jardin')) return 'jardinage';
+            if (s.includes('bricolage')) return 'petit_bricolage';
+            if (s.includes('conciergerie')) return 'conciergerie';
+            if (s.includes('visite') || s.includes('verification') || s.includes('vérification')) return 'visites_verification';
+            return 'nettoyage_regulier';
+        }
+        
+        function puedeHacerTrabajo(autonomo, trabajo) {
+            if (!autonomo || autonomo.estado !== 'activo') return false;
+            if (estaAusente(autonomo.id, trabajo.fecha)) return false;
+            if (!autonomo.skills.includes(trabajo.tipo)) return false;
+            
+            const date = new Date(trabajo.fecha + 'T00:00:00');
+            const dayIdx = date.getDay() === 0 ? 6 : date.getDay() - 1;
+            const dayName = DAYS[dayIdx];
+            const dispo = autonomo.disponibilidad[dayName];
+            
+            if (!dispo || !dispo.activo) return false;
+            
+            const horaT = trabajo.horaInicio || '09:00';
+            if (dispo.inicio && horaT < dispo.inicio) return false;
+            if (dispo.fin && horaT >= dispo.fin) return false;
+            
+            const horasDia = asignaciones
+                .filter(a => a.idAutonomo === autonomo.id && a.fecha === trabajo.fecha && a.estado !== 'completado' && a.estado !== 'anulado')
+                .reduce((s, a) => s + (a.duracion || 2), 0);
+            if (horasDia + (trabajo.duracion || 2) > (autonomo.maxHorasDia || 7)) return false;
+            
+            const horasSemana = asignaciones
+                .filter(a => a.idAutonomo === autonomo.id && a.estado !== 'completado' && a.estado !== 'anulado')
+                .reduce((s, a) => s + (a.duracion || 2), 0);
+            if (horasSemana + (trabajo.duracion || 2) > (autonomo.maxHorasSemana || 35)) return false;
+            
+            return true;
+        }
+        
+        function getAutonome(id) { return autonomos.find(a => a.id === id); }
+        
+        // ========== ALGORITMO DE ASIGNACIÓN ==========
+        function asignarTrabajo(trabajo) {
+            const candidatos = autonomos
+                .filter(a => puedeHacerTrabajo(a, trabajo))
+                .sort((a, b) => {
+                    const horasA = asignaciones.filter(as => as.idAutonomo === a.id && as.estado !== 'completado').reduce((s, as) => s + (as.duracion||2), 0);
+                    const horasB = asignaciones.filter(as => as.idAutonomo === b.id && as.estado !== 'completado').reduce((s, as) => s + (as.duracion||2), 0);
+                    if (horasA !== horasB) return horasA - horasB;
+                    if (a.tipo === 'regular' && b.tipo !== 'regular') return -1;
+                    if (b.tipo === 'regular' && a.tipo !== 'regular') return 1;
+                    return 0;
+                });
+            
+            if (candidatos.length === 0) {
+                trabajo.estado = 'urgente';
+                trabajo.idAutonomo = null;
+                return { asignado: false, mensaje: 'Aucun autonome disponible → Signal urgence envoyé' };
+            }
+            
+            const elegido = candidatos[0];
+            trabajo.idAutonomo = elegido.id;
+            trabajo.estado = 'asignado';
+            trabajo.fechaAsignacion = new Date().toISOString();
+            
+            elegido.balanceHorasSemana += (trabajo.duracion || 2);
+            const idx = autonomos.findIndex(a => a.id === elegido.id);
+            if (idx >= 0) autonomos[idx] = elegido;
+            localStorage.setItem(STORAGE_AUTONOMOS, JSON.stringify(autonomos));
+            
+            return { asignado: true, mensaje: 'Assigné à ' + elegido.nom, autonomo: elegido.nom };
+        }
+        
+        function recalcularTodo() {
+            loadAll();
+            let contador = 0;
+            
+            const trabajosSinAsignar = asignaciones.filter(a => a.estado === 'urgente' || a.estado === 'pendiente_asignacion');
+            trabajosSinAsignar.forEach(t => {
+                const resultado = asignarTrabajo(t);
+                if (resultado.asignado) contador++;
+            });
+            
+            asignaciones.forEach(a => {
+                if (a.estado === 'asignado' && a.idAutonomo) {
+                    const aut = getAutonome(a.idAutonomo);
+                    if (aut && !puedeHacerTrabajo(aut, a)) {
+                        a.idAutonomo = null;
+                        a.estado = 'urgente';
+                        const resultado = asignarTrabajo(a);
+                        if (resultado.asignado) contador++;
+                    }
+                }
+            });
+            
+            saveAll();
+            renderAll();
+            flashMessage(contador > 0 ? '✅ ' + contador + ' travail(aux) réassigné(s)' : '✅ Aucun changement nécessaire', 'success');
+        }
+        
+        // ========== IMPORTAR DEMANDES CONFIRMÉES ==========
+        function importarDemandesConfirmadas() {
+            const confirmadas = demandes.filter(d => d.statut === 'confirmed' || d.statut === 'confirmé');
+            let nuevas = 0;
+            
+            confirmadas.forEach(d => {
+                const yaExiste = asignaciones.some(a => a.idDemande === d.id);
+                if (!yaExiste) {
+                    const trabajo = {
+                        id: 'ASIG-' + Date.now() + '-' + Math.floor(Math.random()*1000),
+                        idDemande: d.id,
+                        fecha: d.date_souhaitee || new Date().toISOString().split('T')[0],
+                        horaInicio: d.heure_intervention || d.heure_souhaitee || '09:00',
+                        tipo: mapearTipo(d.services ? d.services[0] : ''),
+                        duracion: Math.ceil((d.surface || 80) / 40) || 2,
+                        direccion: d.adresse || '',
+                        cliente: d.client || d.contact || '',
+                        estado: 'pendiente_asignacion',
+                        urgente: false
+                    };
+                    
+                    const resultado = asignarTrabajo(trabajo);
+                    asignaciones.push(trabajo);
+                    nuevas++;
+                }
+            });
+            
+            if (nuevas > 0) {
+                saveAll();
+                flashMessage('📥 ' + nuevas + ' nouvelle(s) demande(s) importée(s) et assignée(s)', 'success');
+            }
+        }
+        
+        // ========== RENDER ==========
+        function renderCalendar() {
+            const weekDates = getWeekDates(currentWeekOffset);
+            const today = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('semanaLabel').textContent = 
+                'Semaine du ' + new Date(weekDates[0]).toLocaleDateString('fr-FR', {day:'numeric',month:'short'}) + 
+                ' au ' + new Date(weekDates[6]).toLocaleDateString('fr-FR', {day:'numeric',month:'short'});
+            
+            let html = DAYS_SHORT.map(d => `<div class="cal-day-header">${d}</div>`).join('');
+            
+            weekDates.forEach(date => {
+                const trabajosDia = asignaciones.filter(a => a.fecha === date);
+                const isToday = date === today;
+                
+                html += `<div class="cal-day ${isToday ? 'today' : ''}">
+                    <div class="day-num">${new Date(date).getDate()}</div>`;
+                
+                trabajosDia.forEach(t => {
+                    const aut = t.idAutonomo ? getAutonome(t.idAutonomo) : null;
+                    const color = aut ? aut.color : '#94a3b8';
+                    const nombre = aut ? aut.nom.split(' ')[0] : '?';
+                    html += `<div class="asign-item" style="background:${color};" title="${nombre} · ${SKILLS_LABELS[t.tipo]||t.tipo} · ${t.horaInicio || ''}">
+                        ${t.horaInicio || ''} ${nombre}
+                    </div>`;
+                });
+                
+                html += '</div>';
+            });
+            
+            document.getElementById('coachCalendar').innerHTML = html;
+        }
+        
+        function renderEquipe() {
+            const container = document.getElementById('equipeCargas');
+            if (autonomos.length === 0) {
+                container.innerHTML = '<p style="color:#64748b;">Aucun autonome enregistré</p>';
+                return;
+            }
+            
+            container.innerHTML = autonomos.filter(a => a.estado === 'activo').map(a => {
+                const trabajosActivos = asignaciones.filter(as => as.idAutonomo === a.id && as.estado !== 'completado' && as.estado !== 'anulado');
+                const horas = trabajosActivos.reduce((s, as) => s + (as.duracion || 2), 0);
+                const pct = Math.min(100, Math.round((horas / (a.maxHorasSemana || 35)) * 100));
+                
+                return `
+                <div class="autonome-row">
+                    <div class="autonome-dot" style="background:${a.color};"></div>
+                    <div class="autonome-name">${a.nom}</div>
+                    <div class="autonome-info">${a.tipo}</div>
+                    <div style="flex:1;margin-left:10px;">
+                        <div style="background:#e2e8f0;border-radius:6px;height:6px;overflow:hidden;">
+                            <div style="width:${pct}%;height:100%;background:${pct>90?'#ef5350':pct>60?'#fb8c00':'#43a047'};border-radius:6px;"></div>
+                        </div>
+                    </div>
+                    <div class="autonome-info">${horas}h / ${a.maxHorasSemana || 35}h</div>
+                    <div class="autonome-info">📋 ${trabajosActivos.length} travaux</div>
+                </div>`;
+            }).join('');
+        }
+        
+        function renderSinAsignar() {
+            const container = document.getElementById('travauxSinAsignarList');
+            const sinAsignar = asignaciones.filter(a => a.estado === 'urgente' || a.estado === 'pendiente_asignacion' || !a.idAutonomo);
+            
+            if (sinAsignar.length === 0) {
+                container.innerHTML = '<p style="color:#43a047;">✅ Tous les travaux sont assignés</p>';
+                return;
+            }
+            
+            container.innerHTML = sinAsignar.map(t => `
+                <div style="background:#fff5f5;border-left:3px solid #ef5350;padding:8px 12px;border-radius:8px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <strong>📅 ${t.fecha} · 🕐 ${t.horaInicio || '--'}</strong>
+                        <span style="margin-left:8px;font-size:0.75rem;">${SKILLS_LABELS[t.tipo] || t.tipo}</span>
+                        <br><small>📍 ${t.direccion || ''} · 👤 ${t.cliente || ''}</small>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="reintentarAsignacion('${t.id}')">
+                        <i class="fas fa-sync-alt"></i> Réessayer
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function renderAusencias() {
+            const container = document.getElementById('ausenciasList');
+            const hoy = new Date().toISOString().split('T')[0];
+            const activas = ausencias.filter(a => a.fechaFin >= hoy);
+            
+            if (activas.length === 0) {
+                container.innerHTML = '<p style="color:#64748b;">Aucune absence en cours</p>';
+                return;
+            }
+            
+            container.innerHTML = activas.map(a => {
+                const aut = getAutonome(a.idAutonomo);
+                return `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px;background:#f8fafc;border-radius:8px;margin-bottom:4px;flex-wrap:wrap;gap:8px;">
+                    <div>
+                        <span class="autonome-dot" style="display:inline-block;background:${aut?aut.color:'#94a3b8'};width:8px;height:8px;border-radius:50%;margin-right:6px;"></span>
+                        <strong>${aut ? aut.nom : 'Inconnu'}</strong>
+                        <span class="ausencia-badge ausencia-${a.tipo}">${a.tipo}</span>
+                    </div>
+                    <div style="font-size:0.75rem;">
+                        📅 ${a.fechaInicio} → ${a.fechaFin}
+                        <button class="btn btn-danger btn-sm" style="margin-left:8px;" onclick="eliminarAusencia('${a.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        
+        function updateStats() {
+            document.getElementById('statActivos').textContent = autonomos.filter(a => a.estado === 'activo').length;
+            document.getElementById('statAsignados').textContent = asignaciones.filter(a => a.estado === 'asignado').length;
+            document.getElementById('statUrgentes').textContent = asignaciones.filter(a => a.estado === 'urgente' || a.estado === 'pendiente_asignacion' || !a.idAutonomo).length;
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('statAusentes').textContent = ausencias.filter(a => a.fechaInicio <= hoy && a.fechaFin >= hoy).length;
+        }
+        
+        function renderAll() {
+            renderCalendar();
+            renderEquipe();
+            renderSinAsignar();
+            renderAusencias();
+            updateStats();
+            llenarSelectAutonomos();
+        }
+        
+        // ========== MODALES ==========
+        function llenarSelectAutonomos() {
+            const selects = ['asigAutonomo', 'ausAutonomo'];
+            selects.forEach(sid => {
+                const sel = document.getElementById(sid);
+                if (!sel) return;
+                sel.innerHTML = '<option value="">-- Choisir --</option>' + 
+                    autonomos.filter(a => a.estado === 'activo').map(a => 
+                        `<option value="${a.id}">${a.nom} · ${a.tipo} · ${a.skills.length} skills</option>`
+                    ).join('');
+            });
+        }
+        
+        function abrirModalAsignacion() {
+            document.getElementById('modalAsignacion').classList.add('active');
+            llenarSelectAutonomos();
+            document.getElementById('asigFecha').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function abrirModalAusencia() {
+            document.getElementById('modalAusencia').classList.add('active');
+            llenarSelectAutonomos();
+            document.getElementById('ausInicio').value = new Date().toISOString().split('T')[0];
+            document.getElementById('ausFin').value = new Date().toISOString().split('T')[0];
+        }
+        
+        function cerrarModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+        
+        document.getElementById('modalAsignacion')?.addEventListener('click', function(e) { if(e.target===this) cerrarModal('modalAsignacion'); });
+        document.getElementById('modalAusencia')?.addEventListener('click', function(e) { if(e.target===this) cerrarModal('modalAusencia'); });
+        
+        // ========== FORM ASIGNACIÓN MANUAL ==========
+        document.getElementById('formAsignacionManual').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const trabajo = {
+                id: 'ASIG-MAN-' + Date.now(),
+                idDemande: parseInt(document.getElementById('asigIdDemande').value) || 0,
+                fecha: document.getElementById('asigFecha').value,
+                horaInicio: document.getElementById('asigHora').value,
+                tipo: document.getElementById('asigTipo').value,
+                duracion: parseInt(document.getElementById('asigDuracion').value) || 2,
+                direccion: document.getElementById('asigDireccion').value.trim(),
+                cliente: 'Attribution manuelle',
+                estado: 'asignado',
+                idAutonomo: document.getElementById('asigAutonomo').value
+            };
+            
+            if (!trabajo.idAutonomo) {
+                flashMessage('⚠️ Veuillez choisir un autonome', 'warning');
+                return;
+            }
+            
+            asignaciones.push(trabajo);
+            saveAll();
+            renderAll();
+            cerrarModal('modalAsignacion');
+            flashMessage('✅ Travail assigné manuellement', 'success');
+        });
+        
+        // ========== FORM AUSENCIA ==========
+        document.getElementById('formAusencia').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const ausencia = {
+                id: 'AUS-' + Date.now(),
+                idAutonomo: document.getElementById('ausAutonomo').value,
+                tipo: document.getElementById('ausTipo').value,
+                fechaInicio: document.getElementById('ausInicio').value,
+                fechaFin: document.getElementById('ausFin').value,
+                motivo: document.getElementById('ausMotivo').value.trim(),
+                reportadoPor: 'admin',
+                fechaReporte: new Date().toISOString()
+            };
+            
+            if (!ausencia.idAutonomo) {
+                flashMessage('⚠️ Veuillez choisir un autonome', 'warning');
+                return;
+            }
+            if (ausencia.fechaFin < ausencia.fechaInicio) {
+                flashMessage('⚠️ Date de fin antérieure à la date de début', 'error');
+                return;
+            }
+            
+            ausencias.push(ausencia);
+            
+            const trabajosAfectados = asignaciones.filter(a => 
+                a.idAutonomo === ausencia.idAutonomo && 
+                a.fecha >= ausencia.fechaInicio && 
+                a.fecha <= ausencia.fechaFin &&
+                a.estado === 'asignado'
+            );
+            
+            let reasignados = 0;
+            trabajosAfectados.forEach(t => {
+                t.idAutonomo = null;
+                t.estado = 'urgente';
+                const resultado = asignarTrabajo(t);
+                if (resultado.asignado) reasignados++;
+            });
+            
+            saveAll();
+            renderAll();
+            cerrarModal('modalAusencia');
+            flashMessage('🚨 Absence signalée · ' + reasignados + ' travail(aux) réassigné(s)', 'warning');
+        });
+        
+        // ========== ACCIONES ==========
+        function reintentarAsignacion(id) {
+            const idx = asignaciones.findIndex(a => a.id === id);
+            if (idx >= 0) {
+                const resultado = asignarTrabajo(asignaciones[idx]);
+                saveAll();
+                renderAll();
+                flashMessage(resultado.asignado ? '✅ Assigné à ' + resultado.autonomo : '❌ ' + resultado.mensaje, resultado.asignado ? 'success' : 'error');
+            }
+        }
+        
+        function eliminarAusencia(id) {
+            if (confirm('Supprimer cette absence et réassigner les travaux ?')) {
+                ausencias = ausencias.filter(a => a.id !== id);
+                saveAll();
+                recalcularTodo();
+                renderAll();
+                flashMessage('🗑️ Absence supprimée · Travaux réassignés', 'success');
+            }
+        }
+        
+        function cambiarSemana(offset) {
+            currentWeekOffset += offset;
+            renderCalendar();
+        }
+        
+        function flashMessage(msg, type) {
+            const el = document.getElementById('flashMessage');
+            el.innerHTML = `<div class="flash-msg flash-${type}"><i class="fas fa-${type==='success'?'check-circle':type==='error'?'times-circle':'exclamation-triangle'}"></i> ${msg}</div>`;
+            setTimeout(() => el.innerHTML = '', 5000);
+        }
+        
+        // ========== COMUNICACIÓN CON ADMIN.HTML ==========
+        window.addEventListener('message', function(event) {
+            if (event.data === 'refresh') {
+                poll();
+            }
+        });
+        
+        if (window.parent !== window) {
+            window.parent.postMessage('coach-ready', '*');
+        }
+        
+        // ========== POLLING ==========
+        async function poll() {
+            loadAll();
+            await loadFromServer();
+            importarDemandesConfirmadas();
+            renderAll();
+        }
+        
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'jmnet_demandes' || e.key === 'jmnet_sync_trigger') {
+                poll();
+            }
+        });
+        
+        // ========== OBTENER CSRF AL INICIAR ==========
+        async function initCsrf() {
+            try {
+                const resp = await coachProxyFetch('https://jmnet-services.free.nf/api.php?endpoint=csrf-token&api_key=' + API_KEY);
+                const data = await resp.json();
+                if (data.csrf_token) {
+                    sessionStorage.setItem('csrf_token', data.csrf_token);
+                }
+            } catch(e) {
+                console.log('Coach: CSRF token non disponible');
+            }
+        }
+        
+        // ========== INIT ==========
+        (async function() {
+            await initCsrf();
+            loadAll();
+            await loadFromServer();
+            importarDemandesConfirmadas();
+            renderAll();
+            
+            setInterval(poll, 10000);
+            setInterval(syncToServer, 30000);
+            
+            console.log('✅ [Coach v2.2] Initialisé · Proxy a través de admin · CSRF OK');
+        })();
+    </script>
+</body>
+</html>
