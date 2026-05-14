@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230d47a1'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='18' fill='white'%3EJM%3C/text%3E%3C/svg%3E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>JM Net | Plan d'Attaque Maison – Superbactéries</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4f8;
+            color: #1a2a3a;
+            line-height: 1.5;
+            padding: 20px;
+        }
+
+        :root {
+            --primary-blue: #1e88e5;
+            --primary-dark: #0d47a1;
+            --primary-light: #42a5f5;
+            --accent-cyan: #00acc1;
+            --clean-bg: #f0f4f8;
+            --card-white: #ffffff;
+            --text-dark: #1a2a3a;
+            --text-gray: #546e7a;
+            --success-green: #43a047;
+            --warning-orange: #fb8c00;
+            --alert-red: #ef5350;
+            --alert-red-dark: #c62828;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 16px 36px rgba(0,0,0,0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ===== LOGO SVG (mismo que index) ===== */
+        .logo-wrapper {
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .logo-wrapper:hover { transform: translateX(3px); }
+
+        .minimal-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 25px;
+            background: transparent;
+            text-align: center;
+        }
+
+        .canigou-silhouette {
+            width: 180px;
+            height: 35px;
+            margin-bottom: 2px;
+        }
+
+        .canigou-silhouette svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .shared-logo {
+            width: 230px;
+            height: auto;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.06));
+            transition: var(--transition);
+        }
+
+        .logo-wrapper:hover .shared-logo {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .slogan-container {
+            height: 22px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .slogan-slider {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .slogan-item {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
+            text-align: center;
+            height: 22px;
+            line-height: 22px;
+            white-space: nowrap;
+        }
+
+        .slogan-item::before,
+        .slogan-item::after {
+            content: '•';
+            color: var(--primary-blue);
+            font-size: 0.5rem;
+            opacity: 0.6;
+            margin: 0 8px;
+        }
+
+        .lang-indicators {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .lang-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            transition: all 0.6s ease;
+            cursor: pointer;
+        }
+
+        .lang-dot.active {
+            background: var(--primary-blue);
+            width: 12px;
+            border-radius: 2px;
+        }
+
+        /* ===== BARRA SUPERIOR ===== */
+        .top-bar {
+            background: white;
+            padding: 12px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.8rem;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .top-contact {
+            color: #4a627a;
+        }
+        .top-contact i {
+            margin-right: 6px;
+            color: var(--accent-cyan);
+        }
+
+        /* ===== TITULAR ===== */
+        .hero-attack {
+            background: #0a2f44;
+            color: white;
+            text-align: center;
+            padding: 32px 20px;
+        }
+        .hero-attack h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .hero-attack h1 i {
+            margin-right: 12px;
+            font-size: 1.8rem;
+        }
+        .hero-attack p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* ===== INFOGRAFÍA CASA ===== */
+        .house-container {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 32px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .house-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #4a627a;
+            margin-bottom: 20px;
+        }
+        .house-infographic {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 16px;
+        }
+        .house-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            font-size: 0.7rem;
+        }
+        .legend-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            margin-right: 6px;
+        }
+        .legend-dot.red { background: var(--alert-red-dark); }
+        .legend-dot.blue { background: var(--primary-dark); }
+
+        /* ===== ZONAS SECTION ===== */
+        .zones-section {
+            padding: 40px 28px;
+            background: white;
+        }
+        .section-title {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .section-title h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+            border-bottom: 3px solid var(--accent-cyan);
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        .zones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .zone-card {
+            background: white;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            border: 1px solid #e9ecef;
+        }
+        .zone-card.featured {
+            border: 2px solid var(--alert-red-dark);
+            box-shadow: 0 8px 24px rgba(198, 40, 40, 0.12);
+        }
+        .zone-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+        .zone-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--primary-dark);
+            color: white;
+        }
+        .zone-header i {
+            font-size: 1.5rem;
+        }
+        .zone-header h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .zone-body {
+            padding: 18px;
+        }
+        .mistake {
+            background: #fff0f0;
+            border-left: 4px solid var(--alert-red);
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+        .mistake strong {
+            color: var(--alert-red-dark);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .solution {
+            background: #e8f5e9;
+            border-left: 4px solid var(--success-green);
+            padding: 10px 12px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+        .solution strong {
+            color: var(--success-green);
+            display: block;
+            margin-bottom: 4px;
+        }
+        .bacteria-info {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .bact-name {
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+        .deaths {
+            color: var(--alert-red-dark);
+            font-weight: 700;
+        }
+
+        /* ===== SECTION HOCl ===== */
+        .hocl-section {
+            background: linear-gradient(135deg, #e8f0fe 0%, #dce8f5 100%);
+            padding: 48px 28px;
+        }
+        .hocl-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+        .hocl-left h3 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 16px;
+        }
+        .hocl-stats {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-pill {
+            background: white;
+            border-radius: 40px;
+            padding: 6px 16px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--primary-dark);
+            box-shadow: var(--shadow-sm);
+        }
+        .hocl-right {
+            background: white;
+            border-radius: 24px;
+            padding: 28px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+        }
+        .btn-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 60px;
+            text-decoration: none;
+            font-weight: 800;
+            font-size: 1rem;
+            margin-top: 20px;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(30,136,229,0.3);
+        }
+        .btn-cta:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(30,136,229,0.4);
+        }
+
+        /* ===== CHECKLIST 2 COLONNAS ===== */
+        .checklist-section {
+            padding: 48px 28px;
+            background: white;
+        }
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 24px;
+        }
+        .check-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            border: 1px solid #e9ecef;
+            transition: var(--transition);
+        }
+        .check-item i {
+            color: var(--success-green);
+            font-size: 1.2rem;
+        }
+        .check-item:nth-child(even) {
+            background: #f1f8f4;
+        }
+        .check-item:hover {
+            transform: translateX(4px);
+            background: #e8f5e9;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer-minimal {
+            background: #0a2f44;
+            color: #b0c4de;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 750px) {
+            .hocl-grid {
+                grid-template-columns: 1fr;
+            }
+            .checklist-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-attack h1 {
+                font-size: 1.5rem;
+            }
+            .top-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+            .minimal-container {
+                padding: 10px 15px;
+            }
+            .shared-logo {
+                width: 180px;
+            }
+            .canigou-silhouette {
+                width: 140px;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .page {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .btn-cta {
+                background: var(--primary-dark);
+                color: white;
+            }
+            .house-container {
+                background: white;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <div class="top-bar">
+        <a href="index.html" class="logo-wrapper">
+            <div class="minimal-container">
+                <div class="canigou-silhouette">
+                    <svg viewBox="0 0 240 70" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 0 50 L 40 45 L 80 20 L 105 38 L 135 8 L 165 18 L 195 28 L 220 35 L 240 38" fill="none" stroke="#0d47a1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+                        <path d="M 0 51.5 L 40 46.5 L 80 21.5 L 105 39.5 L 135 9.5 L 165 19.5 L 195 29.5 L 220 36.5 L 240 39.5" fill="none" stroke="#0d47a1" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.12"/>
+                    </svg>
+                </div>
+                <svg class="shared-logo" viewBox="0 0 230 75" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M 15 50 Q 115 46 215 50" fill="none" stroke="#0d47a1" stroke-width="2" stroke-linecap="round" opacity="0.12" />
+                    <path d="M 36 18 L 54 18 Q 62 18 62 26 L 62 42 Q 62 55 48 56 Q 36 56 34 48" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 64 52 L 64 18 L 80 48 L 96 18 L 96 58" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 99 58 L 99 18 L 131 58 L 131 18" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 135 18 L 167 18 M 135 38 L 159 38 M 135 58 L 167 58 M 135 18 L 135 58" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M 165 18 L 199 18 M 182 18 L 182 58" fill="none" stroke="#000000" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <div class="slogan-container">
+                    <div class="slogan-slider" id="sloganSlider">
+                        <div class="slogan-item">Propreté comme première action</div>
+                        <div class="slogan-item">Cleanliness as first action</div>
+                        <div class="slogan-item">Limpieza como primera acción</div>
+                        <div class="slogan-item">Neteja com a primera acció</div>
+                    </div>
+                </div>
+                <div class="lang-indicators" id="langIndicators">
+                    <div class="lang-dot active" data-idx="0"></div>
+                    <div class="lang-dot" data-idx="1"></div>
+                    <div class="lang-dot" data-idx="2"></div>
+                    <div class="lang-dot" data-idx="3"></div>
+                </div>
+            </div>
+        </a>
+        <div class="top-contact">
+            <i class="fas fa-phone-alt"></i> +33 75 76 90 88 4 &nbsp;&nbsp;|&nbsp;&nbsp;
+            <i class="fas fa-envelope"></i> contact@jmnet.fr
+        </div>
+    </div>
+
+    <div class="hero-attack">
+        <h1><i class="fas fa-biohazard"></i> PLAN D'ATTAQUE MAISON</h1>
+        <p>5 zones · 5 erreurs · 1 solution définitive : HOCl</p>
+    </div>
+
+    <div class="house-container">
+        <div class="house-title">
+            <i class="fas fa-home"></i> CARTE DES ZONES CRITIQUES
+        </div>
+        <img src="info.png" 
+             alt="Carte des zones à risque - bactéries résistantes dans la maison"
+             class="house-infographic"
+             onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22600%22 height=%22200%22 viewBox=%220 0 600 200%22%3E%3Crect width=%22600%22 height=%22200%22 fill=%22%23f0f4f8%22/%3E%3Ctext x=%22300%22 y=%22100%22 text-anchor=%22middle%22 fill=%22%23c62828%22 font-size=%2214%22%3E⚠️ Image non trouvée%3C/text%3E%3Ctext x=%22300%22 y=%22120%22 text-anchor=%22middle%22 fill=%22%23546e7a%22 font-size=%2212%22%3Einfo.png manquant dans la racine%3C/text%3E%3C/svg%3E';">
+        <div class="house-legend">
+            <span><span class="legend-dot red"></span> Points chauds (biofilms, résistances)</span>
+            <span><span class="legend-dot blue"></span> Nettoyer impérativement avec HOCl</span>
+        </div>
+    </div>
+
+    <div class="zones-section">
+        <div class="section-title">
+            <h2>🔍 ZONES À RISQUE</h2>
+        </div>
+        <div class="zones-grid">
+            <div class="zone-card featured">
+                <div class="zone-header"><i class="fas fa-utensils"></i><h3>Cuisine · zone rouge</h3></div>
+                <div class="zone-body">
+                    <div class="mistake"><strong>❌ Erreur</strong> Torchon de la semaine + éponge humide</div>
+                    <div class="bacteria-info"><span class="bact-name">🦠 E. coli BLSE</span><span class="deaths">💀 7 200 morts/an</span></div>
+                    <div class="solution"><strong>✅ Attaque JM Net</strong> Torchon propre chaque jour · HOCl sur plan de travail & planche</div>
+                </div>
+            </div>
+            <div class="zone-card">
+                <div class="zone-header"><i class="fas fa-toilet"></i><h3>Toilettes</h3></div>
+                <div class="zone-body">
+                    <div class="mistake"><strong>❌ Erreur</strong> Chasse tirée sans fermer le couvercle</div>
+                    <div class="bacteria-info"><span class="bact-name">🦠 SARM (S. aureus)</span><span class="deaths">💀 5 500 morts/an</span></div>
+                    <div class="solution"><strong>✅ Attaque JM Net</strong> Couvercle fermé · HOCl sur siège · Brosse à dents éloignée</div>
+                </div>
+            </div>
+            <div class="zone-card">
+                <div class="zone-header"><i class="fas fa-shower"></i><h3>Douche / Biofilm</h3></div>
+                <div class="zone-body">
+                    <div class="mistake"><strong>❌ Erreur</strong> Paroi jamais séchée · Joints noirs/roses</div>
+                    <div class="bacteria-info"><span class="bact-name">🦠 P. aeruginosa</span><span class="deaths">💀 2 100 morts/an</span></div>
+                    <div class="solution"><strong>✅ Attaque JM Net</strong> HOCl après chaque douche + racloir · nettoyage joint 1x/semaine</div>
+                </div>
+            </div>
+            <div class="zone-card">
+                <div class="zone-header"><i class="fas fa-mobile-alt"></i><h3>Tactile & chaussures</h3></div>
+                <div class="zone-body">
+                    <div class="mistake"><strong>❌ Erreur</strong> Mobile / télécommande jamais désinfectés · chaussures intérieur</div>
+                    <div class="bacteria-info"><span class="bact-name">🦠 A. baumannii</span><span class="deaths">💀 1 400 morts/an</span></div>
+                    <div class="solution"><strong>✅ Attaque JM Net</strong> HOCl quotidien sur surfaces tactiles · pantoufles dédiées</div>
+                </div>
+            </div>
+            <div class="zone-card">
+                <div class="zone-header"><i class="fas fa-tshirt"></i><h3>Lave-linge</h3></div>
+                <div class="zone-body">
+                    <div class="mistake"><strong>❌ Erreur</strong> Hublot fermé · bac à lessive sale</div>
+                    <div class="bacteria-info"><span class="bact-name">🦠 K. pneumoniae</span><span class="deaths">💀 3 800 morts/an</span></div>
+                    <div class="solution"><strong>✅ Attaque JM Net</strong> Porte ouverte · Nettoyage joint HOCl 1x/mois · lavage 60°C</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hocl-section">
+        <div class="hocl-grid">
+            <div class="hocl-left">
+                <h3><i class="fas fa-droplet"></i> L'arme absolue : HOCl</h3>
+                <p>Eau électrolysée · 30 secondes · 99,999% d'élimination · Zéro résistance possible.</p>
+                <div class="hocl-stats">
+                    <span class="stat-pill"><i class="fas fa-bolt"></i> 30 sec</span>
+                    <span class="stat-pill"><i class="fas fa-chart-line"></i> Log 5</span>
+                    <span class="stat-pill"><i class="fas fa-leaf"></i> 100% bio</span>
+                    <span class="stat-pill"><i class="fas fa-shield-alt"></i> 0 résidu</span>
+                </div>
+                <p>Contrairement aux chimiques (Javel, QAC, Triclosán), HOCl ne sélectionne pas les bactéries résistantes. Il détruit physiquement leur membrane, comme le ferait votre système immunitaire.</p>
+            </div>
+            <div class="hocl-right">
+                <i class="fas fa-flask" style="font-size: 2.5rem; color: var(--primary-dark);"></i>
+                <p style="margin: 12px 0; font-weight: 600;">Passez à l'action dès aujourd'hui</p>
+                <a href="#" class="btn-cta"><i class="fas fa-gift"></i> Demander un essai gratuit</a>
+                <p style="margin-top: 14px; font-size: 0.65rem;">jmnet.fr · Livraison locale 66</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="checklist-section">
+        <div class="section-title">
+            <h2>📋 CHECKLIST · À DÉCOUPER / À AFFICHER</h2>
+        </div>
+        <div class="checklist-grid">
+            <div class="check-item"><i class="fas fa-check-circle"></i> Torchon propre tous les jours</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Fermer la cuvette avant de tirer</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Sécher la douche + HOCl après chaque usage</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Désinfection téléphone/télécommande HOCl</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Laisser porte lave-linge ouverte</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Chaussures retirées à l'entrée (pantoufles)</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Nettoyer joint et bac lessive 1x/mois</div>
+            <div class="check-item"><i class="fas fa-check-circle"></i> Serviettes de bain 60°C tous les 2 jours</div>
+        </div>
+        <p style="text-align: center; margin-top: 28px; font-size: 0.7rem; color: #4a627a;">
+            <i class="fas fa-home"></i> Une maison saine n'est pas stérile. C'est un écosystème équilibré où les pathogènes sont contrôlés, pas renforcés.
+        </p>
+    </div>
+
+    <div class="footer-minimal">
+        <p>© JM Net · Nettoyage Professionnel 66 · Propreté comme première action · HOCl 100% biodégradable</p>
+        <p style="margin-top: 4px;">Sources : Santé Publique France 2024, OMS 2023, ECDC 2023, ANSES 2022</p>
+    </div>
+</div>
+
+<script>
+    const sloganSlider = document.getElementById('sloganSlider');
+    const langDots = document.querySelectorAll('.lang-dot');
+    let currentSlogan = 0;
+    const totalSlogans = 4;
+    let rotationInterval = null;
+
+    function getSloganHeight() {
+        const firstSlogan = document.querySelector('.slogan-item');
+        if (firstSlogan) {
+            return firstSlogan.offsetHeight;
+        }
+        return 22;
+    }
+
+    function moveToSlogan(index) {
+        const sloganHeight = getSloganHeight();
+        const offset = -index * sloganHeight;
+        if (sloganSlider) {
+            sloganSlider.style.transform = 'translateY(' + offset + 'px)';
+        }
+        if (langDots) {
+            langDots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === index);
+            });
+        }
+        currentSlogan = index;
+    }
+
+    function rotateSlogan() {
+        const nextIndex = (currentSlogan + 1) % totalSlogans;
+        moveToSlogan(nextIndex);
+    }
+
+    function restartRotation() {
+        if (rotationInterval) {
+            clearInterval(rotationInterval);
+        }
+        rotationInterval = setInterval(rotateSlogan, 5000);
+    }
+
+    if (sloganSlider && langDots.length > 0) {
+        moveToSlogan(0);
+        restartRotation();
+        langDots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const clickedIndex = parseInt(dot.getAttribute('data-idx'));
+                if (!isNaN(clickedIndex) && clickedIndex !== currentSlogan) {
+                    moveToSlogan(clickedIndex);
+                    restartRotation();
+                }
+            });
+        });
+    }
+</script>
+</body>
+</html>
