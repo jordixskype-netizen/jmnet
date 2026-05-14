@@ -2,12 +2,12 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%230d47a1'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='18' fill='white'%3EJM%3C/text%3E%3C/svg%3E">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>JM Net | L'Évolution Invisible - Résistance Bactérienne & Solutions</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
         :root {
@@ -140,6 +140,12 @@
             text-align: center;
             overflow: hidden;
             clip-path: polygon(0 0, 100% 0, 100% 92%, 0 100%);
+            cursor: pointer;
+            transition: filter 0.2s ease;
+        }
+        
+        .hero-bacteria:hover {
+            filter: brightness(1.02);
         }
         
         .hero-bacteria::before {
@@ -226,6 +232,35 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             font-weight: 500;
+        }
+        
+        /* Indicador visual de que se puede hacer clic */
+        .click-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        
+        .click-hint i {
+            font-size: 0.7rem;
+            animation: bounce 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(3px); }
         }
         
         .main-container {
@@ -401,6 +436,90 @@
             color: #94a3b8;
             margin-top: 2px;
         }
+
+        /* ===== ÉVOLUTION COMPACTE ===== */
+        .evo-timeline-compact {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin: 20px 0;
+        }
+
+        .timeline-axis {
+            position: relative;
+            margin: 30px 0 20px;
+        }
+
+        .timeline-bar {
+            height: 6px;
+            background: linear-gradient(90deg, #1e88e5, #ef5350);
+            border-radius: 3px;
+            width: 100%;
+        }
+
+        .human-mark, .bacteria-mark {
+            position: absolute;
+            top: -28px;
+            font-weight: 700;
+            font-size: 0.7rem;
+            white-space: nowrap;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .human-mark {
+            left: 0;
+            transform: translateX(-10%);
+            color: #1e88e5;
+            border-left: 3px solid #1e88e5;
+        }
+
+        .bacteria-mark {
+            right: 0;
+            transform: translateX(10%);
+            color: #ef5350;
+            border-right: 3px solid #ef5350;
+        }
+
+        .timeline-note {
+            background: #e8f0fe;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 20px 0 12px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-dark);
+        }
+
+        .timeline-note i {
+            font-size: 1.2rem;
+        }
+
+        .timeline-impact {
+            font-size: 0.8rem;
+            color: #c62828;
+            background: #fff0f0;
+            padding: 10px 14px;
+            border-radius: 12px;
+            border-left: 3px solid #c62828;
+        }
+
+        @media (max-width: 768px) {
+            .human-mark, .bacteria-mark {
+                font-size: 0.55rem;
+                top: -22px;
+                padding: 2px 6px;
+            }
+            .timeline-note {
+                flex-direction: column;
+                text-align: center;
+                gap: 6px;
+            }
+        }
         
         /* ===== FICHES COUPLÉES BACTÉRIE-PRODUIT ===== */
         .paired-cards {
@@ -551,7 +670,7 @@
             overflow-x: auto;
         }
         
-        /* ===== MECANISMES (5 cartes compactes) ===== */
+        /* ===== MECANISMES ===== */
         .mechanism-mini-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -712,6 +831,90 @@
             margin-top: 3px;
         }
         
+        /* ===== MODAL INFOGRAFÍA (estilo elegante) ===== */
+        .modal-infografia {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 25, 47, 0.92);
+            backdrop-filter: blur(12px);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        
+        .modal-infografia.active {
+            display: flex;
+        }
+        
+        .modal-contenido {
+            max-width: 90vw;
+            max-height: 90vh;
+            background: transparent;
+            border-radius: 24px;
+            overflow: auto;
+            position: relative;
+            cursor: default;
+        }
+        
+        .modal-contenido img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            display: block;
+        }
+        
+        .modal-cerrar {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            background: white;
+            color: var(--primary-dark);
+            border: none;
+            font-size: 1.6rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        
+        .modal-cerrar:hover {
+            background: var(--danger);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .modal-cerrar {
+                top: -10px;
+                right: -10px;
+                width: 36px;
+                height: 36px;
+                font-size: 1.3rem;
+            }
+            .modal-contenido {
+                max-width: 95vw;
+                max-height: 85vh;
+            }
+            .click-hint {
+                bottom: 10px;
+                font-size: 0.6rem;
+                padding: 4px 10px;
+            }
+            .click-hint span { display: none; }
+        }
+        
         /* ===== FOOTER ===== */
         .site-footer {
             text-align: center;
@@ -822,8 +1025,8 @@
     </a>
 </header>
 
-<!-- ===== HERO ===== -->
-<section class="hero-bacteria">
+<!-- ===== HERO avec déclencheur modal ===== -->
+<section class="hero-bacteria" id="ouvrirModalBtn">
     <div class="hero-content">
         <h1 data-lang="fr">Ce que vous <span class="highlight">ne voyez pas</span><br>détruit ce que vous voyez</h1>
         <h1 data-lang="en">What you <span class="highlight">don't see</span><br>destroys what you see</h1>
@@ -859,7 +1062,22 @@
             </div>
         </div>
     </div>
+    <div class="click-hint">
+        <i class="fas fa-hand-pointer"></i>
+        <span data-lang="fr">Cliquez pour voir l'infographie</span>
+        <span data-lang="en">Click to see the infographic</span>
+        <span data-lang="es">Haz clic para ver la infografía</span>
+        <span data-lang="ca">Clica per veure la infografia</span>
+    </div>
 </section>
+
+<!-- MODAL INFOGRAFÍA (solo la imagen, sin nada más) -->
+<div id="modalInfografia" class="modal-infografia">
+    <div class="modal-contenido">
+        <button class="modal-cerrar" id="cerrarModalBtn">&times;</button>
+        <img src="info.png" alt="Infographie JM Net - Plan d'attaque maison contre les bactéries résistantes">
+    </div>
+</div>
 
 <div style="text-align:center;padding:20px 0 0 0;position:relative;z-index:3;">
     <div style="display:flex;gap:8px;justify-content:center;">
@@ -951,35 +1169,28 @@
         <h2 data-lang="es"><i class="fas fa-tachometer-alt"></i> ¿Por qué los desinfectantes terminan fallando?</h2>
         <h2 data-lang="ca"><i class="fas fa-tachometer-alt"></i> Per què els desinfectants acaben fallant?</h2>
         
-        <div class="evo-bar-wrapper">
-            <div class="evo-bar-group">
-                <div class="evo-bar human"><span class="evo-bar-value">1</span></div>
-                <div class="evo-bar-label" data-lang="fr">Humain</div><div class="evo-bar-label" data-lang="en">Human</div><div class="evo-bar-label" data-lang="es">Humano</div><div class="evo-bar-label" data-lang="ca">Humà</div>
-                <div class="evo-bar-sublabel" data-lang="fr">génération en 20 ans</div><div class="evo-bar-sublabel" data-lang="en">generation in 20 years</div><div class="evo-bar-sublabel" data-lang="es">generación en 20 años</div><div class="evo-bar-sublabel" data-lang="ca">generació en 20 anys</div>
+        <div class="evo-timeline-compact">
+            <div class="timeline-axis">
+                <div class="timeline-bar"></div>
+                <div class="human-mark">👤 1 génération humaine</div>
+                <div class="bacteria-mark">🦠 350 000 générations bactériennes</div>
             </div>
-            <div class="evo-bar-group">
-                <div class="evo-bar bacteria"><span class="evo-bar-value">350 000</span></div>
-                <div class="evo-bar-label" data-lang="fr">Bactérie</div><div class="evo-bar-label" data-lang="en">Bacterium</div><div class="evo-bar-label" data-lang="es">Bacteria</div><div class="evo-bar-label" data-lang="ca">Bacteri</div>
-                <div class="evo-bar-sublabel" data-lang="fr">générations en 20 ans</div><div class="evo-bar-sublabel" data-lang="en">generations in 20 years</div><div class="evo-bar-sublabel" data-lang="es">generaciones en 20 años</div><div class="evo-bar-sublabel" data-lang="ca">generacions en 20 anys</div>
+            <div class="timeline-note">
+                <i class="fas fa-hourglass-half"></i>
+                <span data-lang="fr">Pendant qu'une génération humaine grandit (20 ans), une bactérie enchaîne <strong>350 000 cycles évolutifs</strong>.</span>
+                <span data-lang="en">While one human generation grows (20 years), a bacterium goes through <strong>350,000 evolutionary cycles</strong>.</span>
+                <span data-lang="es">Mientras una generación humana crece (20 años), una bacteria pasa por <strong>350.000 ciclos evolutivos</strong>.</span>
+                <span data-lang="ca">Mentre una generació humana creix (20 anys), un bacteri passa per <strong>350.000 cicles evolutius</strong>.</span>
+            </div>
+            <div class="timeline-impact">
+                <i class="fas fa-skull-crosswalk"></i>
+                <span data-lang="fr"><strong>La conséquence :</strong> chaque produit chimique sélectionne les mutants résistants en quelques semaines. Une bactérie atteint 300 générations (l'âge de notre civilisation) en <strong>seulement 4,6 jours</strong>.</span>
+                <span data-lang="en"><strong>The consequence:</strong> each chemical product selects resistant mutants in just a few weeks. A bacterium reaches 300 generations (the age of our civilization) in <strong>only 4.6 days</strong>.</span>
+                <span data-lang="es"><strong>La consecuencia:</strong> cada producto químico selecciona mutantes resistentes en pocas semanas. Una bacteria alcanza 300 generaciones (la edad de nuestra civilización) en <strong>solo 4,6 días</strong>.</span>
+                <span data-lang="ca"><strong>La conseqüència:</strong> cada producte químic selecciona mutants resistents en poques setmanes. Un bacteri arriba a 300 generacions (l'edat de la nostra civilització) en <strong>només 4,6 dies</strong>.</span>
             </div>
         </div>
         
-        <p style="font-size:0.9rem;color:#546e7a;text-align:center;line-height:1.6;max-width:620px;margin:0 auto;" data-lang="fr">
-            Notre civilisation compte ~300 générations depuis les Sumériens. Une bactérie atteint ce chiffre <strong>en 4,6 jours</strong>. 
-            À 40 ans, l'humain en est à 2 générations ; la bactérie à 700 000.
-        </p>
-        <p style="font-size:0.9rem;color:#546e7a;text-align:center;line-height:1.6;max-width:620px;margin:0 auto;" data-lang="en">
-            Our civilization counts ~300 generations since the Sumerians. A bacterium reaches that <strong>in 4.6 days</strong>. 
-            At age 40, the human is at 2 generations; the bacterium at 700,000.
-        </p>
-        <p style="font-size:0.9rem;color:#546e7a;text-align:center;line-height:1.6;max-width:620px;margin:0 auto;" data-lang="es">
-            Nuestra civilización cuenta ~300 generaciones desde los sumerios. Una bacteria alcanza esa cifra <strong>en 4,6 días</strong>. 
-            A los 40 años, el humano lleva 2 generaciones; la bacteria, 700.000.
-        </p>
-        <p style="font-size:0.9rem;color:#546e7a;text-align:center;line-height:1.6;max-width:620px;margin:0 auto;" data-lang="ca">
-            La nostra civilització compta ~300 generacions des dels sumeris. Un bacteri hi arriba <strong>en 4,6 dies</strong>. 
-            Als 40 anys, l'humà en porta 2 generacions; el bacteri, 700.000.
-        </p>
         <div class="section-source">
             <span data-lang="fr">Sources : Block & Rowan (2020), OMS (2023)</span>
             <span data-lang="en">Sources: Block & Rowan (2020), WHO (2023)</span>
@@ -1001,7 +1212,6 @@
         <p class="lead" data-lang="ca">Cada superbacteri té un producte químic que l'ha enfortit. Aquestes són les cinc parelles documentades per la literatura científica.</p>
         
         <div class="paired-cards">
-            <!-- 1 -->
             <div class="paired-row">
                 <div class="paired-bacteria">
                     <div class="bact-name">S. aureus (SARM)</div>
@@ -1017,7 +1227,6 @@
                     <div class="prod-effect" data-lang="ca">Resistència creuada als antibiòtics. El producte n°1 documentat per aquest efecte.</div>
                 </div>
             </div>
-            <!-- 2 -->
             <div class="paired-row">
                 <div class="paired-bacteria">
                     <div class="bact-name">E. coli (BLEE)</div>
@@ -1033,7 +1242,6 @@
                     <div class="prod-effect" data-lang="ca">Ajuda el bacteri a acceptar gens de resistència d'altres bacteris.</div>
                 </div>
             </div>
-            <!-- 3 -->
             <div class="paired-row">
                 <div class="paired-bacteria">
                     <div class="bact-name">K. pneumoniae</div>
@@ -1049,7 +1257,6 @@
                     <div class="prod-effect" data-lang="ca">L'efecte protector s'inverteix a UCI: augment de les infeccions.</div>
                 </div>
             </div>
-            <!-- 4 -->
             <div class="paired-row">
                 <div class="paired-bacteria">
                     <div class="bact-name">P. aeruginosa</div>
@@ -1065,7 +1272,6 @@
                     <div class="prod-effect" data-lang="ca">El bacteri expulsa el producte i s'envolta d'un biofilm impenetrable.</div>
                 </div>
             </div>
-            <!-- 5 -->
             <div class="paired-row">
                 <div class="paired-bacteria">
                     <div class="bact-name">A. baumannii</div>
@@ -1083,7 +1289,6 @@
             </div>
         </div>
         
-        <!-- Pestaña: mecanismos -->
         <div class="info-toggle" id="toggleMeca">
             <span data-lang="fr">🔬 Voir les 5 mécanismes de défense</span>
             <span data-lang="en">🔬 See the 5 defense mechanisms</span>
@@ -1179,7 +1384,6 @@
         </div>
     </div>
     
-    <!-- Comparaison + Microbiome fusionnés -->
     <div class="section-card fade-in" style="margin-top:-10px;">
         <h2 data-lang="fr"><i class="fas fa-balance-scale"></i> HOCl vs produits chimiques</h2>
         <h2 data-lang="en"><i class="fas fa-balance-scale"></i> HOCl vs Chemical Products</h2>
@@ -1209,7 +1413,6 @@
             </div>
         </div>
         
-        <!-- Microbiome en stats mini -->
         <div class="stats-mini-grid">
             <div class="stat-mini">
                 <div class="stat-value">3 000-5 000</div>
@@ -1321,6 +1524,7 @@
 </footer>
 
 <script>
+    // ==================== MULTILANGUE ====================
     var currentLang = 'fr';
     
     function switchLang(lang) {
@@ -1355,12 +1559,13 @@
         if (savedLang && ['fr','en','es','ca'].indexOf(savedLang) >= 0) switchLang(savedLang);
     } catch(e) {}
     
+    // ==================== INTERSECTION OBSERVER ====================
     var observer = new IntersectionObserver(function(entries) {
         entries.forEach(function(e) { e.target.classList.toggle('visible', e.isIntersecting); });
     }, { threshold: 0.1 });
     document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
     
-    // Toggles
+    // ==================== TOGGLES ====================
     function setupToggle(toggleId, contentId) {
         var toggle = document.getElementById(toggleId);
         var content = document.getElementById(contentId);
@@ -1380,31 +1585,86 @@
     setupToggle('toggleMeca', 'contentMeca');
     setupToggle('toggleMethodo', 'contentMethodo');
     
+    // ==================== SLOGAN ROTATION ====================
     var sloganSlider = document.getElementById('sloganSlider');
     var langDots = document.querySelectorAll('.lang-dot');
     var currentSlogan = 0;
     var totalSlogans = 4;
+    var rotationInterval = null;
+    
+    function getSloganHeight() {
+        var firstSlogan = document.querySelector('.slogan-item');
+        return firstSlogan ? firstSlogan.offsetHeight : 20;
+    }
+    
+    function moveToSlogan(index) {
+        var sloganHeight = getSloganHeight();
+        var offset = -index * sloganHeight;
+        if (sloganSlider) sloganSlider.style.transform = 'translateY(' + offset + 'px)';
+        if (langDots) langDots.forEach(function(dot, idx) { dot.classList.toggle('active', idx === index); });
+        currentSlogan = index;
+    }
     
     function rotateSlogan() {
-        currentSlogan = (currentSlogan + 1) % totalSlogans;
-        var offset = -currentSlogan * 20;
-        if (sloganSlider) sloganSlider.style.transform = 'translateY(' + offset + 'px)';
-        if (langDots) langDots.forEach(function(dot, idx) { dot.classList.toggle('active', idx === currentSlogan); });
+        var nextIndex = (currentSlogan + 1) % totalSlogans;
+        moveToSlogan(nextIndex);
+    }
+    
+    function restartRotation() {
+        if (rotationInterval) clearInterval(rotationInterval);
+        rotationInterval = setInterval(rotateSlogan, 5000);
     }
     
     if (sloganSlider && langDots.length > 0) {
-        setInterval(rotateSlogan, 5000);
+        moveToSlogan(0);
+        restartRotation();
         langDots.forEach(function(dot) {
             dot.addEventListener('click', function(e) {
-                e.preventDefault(); e.stopPropagation();
-                currentSlogan = parseInt(dot.getAttribute('data-idx'));
-                var offset = -currentSlogan * 20;
-                sloganSlider.style.transform = 'translateY(' + offset + 'px)';
-                langDots.forEach(function(d, idx) { d.classList.toggle('active', idx === currentSlogan); });
+                e.preventDefault();
+                e.stopPropagation();
+                var clickedIndex = parseInt(dot.getAttribute('data-idx'));
+                if (!isNaN(clickedIndex) && clickedIndex !== currentSlogan) {
+                    moveToSlogan(clickedIndex);
+                    restartRotation();
+                }
             });
         });
     }
     
+    // ==================== MODAL INFOGRAFÍA (Opción A - sin página extra) ====================
+    var modal = document.getElementById('modalInfografia');
+    var abrirBtn = document.getElementById('ouvrirModalBtn');
+    var cerrarBtn = document.getElementById('cerrarModalBtn');
+    
+    function abrirModal(e) {
+        e.preventDefault();
+        if (modal) modal.classList.add('active');
+    }
+    
+    function cerrarModal() {
+        if (modal) modal.classList.remove('active');
+    }
+    
+    if (abrirBtn) {
+        abrirBtn.addEventListener('click', abrirModal);
+        abrirBtn.style.cursor = 'pointer';
+    }
+    
+    if (cerrarBtn) cerrarBtn.addEventListener('click', cerrarModal);
+    
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) cerrarModal();
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+            cerrarModal();
+        }
+    });
+    
+    // ==================== CHART.JS ====================
     document.addEventListener('DOMContentLoaded', function() {
         var canvas = document.getElementById('projectionChart');
         if (!canvas) return;

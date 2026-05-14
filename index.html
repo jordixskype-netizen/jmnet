@@ -2013,371 +2013,25 @@
             </form>
         </div>
         
-        <!-- TAB 2: CONCIERGERIES & PROPRIÉTAIRES -->
-        <div id="tab2" class="tab-content">
-            <form id="formGestionnaire">
-                <div style="position: absolute; left: -9999px;">
-                    <input type="text" id="honeypot2" name="website" tabindex="-1">
-                </div>
-                <input type="hidden" name="type_client" value="gestionnaire">
-                <input type="hidden" name="form_type" value="gestionnaire">
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-building"></i> <span data-key="societe">Nom de la société / Conciergerie</span> *</label>
-                        <input type="text" class="form-input" name="societe" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-user-tie"></i> <span data-key="contact">Personne de contact</span> *</label>
-                        <input type="text" class="form-input" name="contact" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-phone"></i> <span data-key="telephone">Téléphone</span> *</label>
-                        <input type="tel" class="form-input" name="telephone" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-envelope"></i> <span data-key="email">Email</span> *</label>
-                        <input type="email" class="form-input" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-calendar"></i> <span data-key="date_souhaitee">Date souhaitée</span> *</label>
-                        <input type="date" class="form-input" name="date_souhaitee" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-clock"></i> <span data-key="heure_souhaitee">Heure souhaitée (indicatif)</span></label>
-                        <select class="form-input" name="heure_souhaitee">
-                            <option value="">-- Non spécifiée --</option>
-                            <option value="08:00">08:00</option>
-                            <option value="09:00">09:00</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                            <option value="13:00">13:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                        </select>
-                        <small style="color:#64748b;font-size:0.75rem;margin-top:4px;display:block;">
-                            <i class="fas fa-info-circle"></i> <span data-key="info_heure">Horaire indicatif. L'horaire définitif sera confirmé après échange.</span>
-                        </small>
-                    </div>
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> <span data-key="adresse_site">Adresse du site principal</span> *</label>
-                        <input type="text" class="form-input" name="adresse" required>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-broom"></i> <span data-key="services">Services généraux souhaités</span></label>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px;">
-                            <div class="service-option">
-                                <input type="checkbox" id="g1" value="Parties communes (escaliers, halls)" class="service-checkbox" name="services">
-                                <label for="g1" class="service-label">
-                                    <div class="service-icon"><i class="fas fa-stairs"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_communes">Parties communes</div>
-                                        <div class="service-desc" data-key="service_communes_desc">Escaliers, halls, ascenseurs</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g2" value="Appartements (intérieurs)" class="service-checkbox" name="services">
-                                <label for="g2" class="service-label">
-                                    <div class="service-icon"><i class="fas fa-door-open"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_appartements">Appartements</div>
-                                        <div class="service-desc" data-key="service_appartements_desc">Nettoyage intérieur complet</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g3" value="Vitres (façades)" class="service-checkbox" name="services">
-                                <label for="g3" class="service-label">
-                                    <div class="service-icon"><i class="fas fa-window-maximize"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_vitres_facades">Vitres</div>
-                                        <div class="service-desc" data-key="service_vitres_facades_desc">Façades et intérieurs</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g4" value="Fin de chantier" class="service-checkbox" name="services">
-                                <label for="g4" class="service-label">
-                                    <div class="service-icon"><i class="fas fa-hard-hat"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_fin_chantier">Fin de chantier</div>
-                                        <div class="service-desc" data-key="service_fin_chantier_desc">Après travaux/rénovation</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g5" value="Désinfection" class="service-checkbox" name="services">
-                                <label for="g5" class="service-label">
-                                    <div class="service-icon"><i class="fas fa-virus-slash"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_desinfection">Désinfection</div>
-                                        <div class="service-desc" data-key="service_desinfection_desc">Protocole sanitaire complet</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g6" value="Jardinage" class="service-checkbox" name="services">
-                                <label for="g6" class="service-label">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, var(--warning-orange), #e65100);"><i class="fas fa-tree"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_jardinage">Jardinage</div>
-                                        <div class="service-desc" data-key="service_jardinage_desc">Entretien extérieur, taille, débroussaillage</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g7" value="Petit bricolage" class="service-checkbox" name="services">
-                                <label for="g7" class="service-label">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, #6d4c41, #4e342e);"><i class="fas fa-tools"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_bricolage">Petit bricolage</div>
-                                        <div class="service-desc" data-key="service_bricolage_desc">Réparations mineures, peinture, montage</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g8" value="Conciergerie" class="service-checkbox" name="services">
-                                <label for="g8" class="service-label">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, #6a1b9a, #4a148c);"><i class="fas fa-key"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_conciergerie">Conciergerie</div>
-                                        <div class="service-desc" data-key="service_conciergerie_desc">Check-in/out, état des lieux, entretien</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g9" value="Visites de vérification" class="service-checkbox" name="services">
-                                <label for="g9" class="service-label">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, #00838f, #006064);"><i class="fas fa-eye"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_visites">Visites de vérification</div>
-                                        <div class="service-desc" data-key="service_visites_desc">Contrôle régulier résidence inoccupée</div>
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="service-option">
-                                <input type="checkbox" id="g10" value="Nettoyage après syndrome de Diogène" class="service-checkbox" name="services">
-                                <label for="g10" class="service-label">
-                                    <div class="service-icon" style="background: linear-gradient(135deg, #6d4c41, #4e342e);"><i class="fas fa-boxes"></i></div>
-                                    <div class="service-text">
-                                        <div class="service-title" data-key="service_diogene">Nettoyage après syndrome de Diogène</div>
-                                        <div class="service-desc" data-key="service_diogene_desc">Désencombrement & nettoyage intégral</div>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <hr style="grid-column: span 2; margin: 10px 0;">
-                    
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-building"></i> <span data-key="proprietes">Propriétés / Appartements à entretenir</span></label>
-                        <div id="propertiesContainer">
-                            <div class="property-card" data-property-idx="0">
-                                <div class="property-header">
-                                    <strong><i class="fas fa-home"></i> <span data-key="propriete">Propriété</span> #1</strong>
-                                    <button type="button" class="remove-property" onclick="removeProperty(this)" style="display:none;">✕</button>
-                                </div>
-                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_adresse">Référence / Adresse</span></label>
-                                        <input type="text" class="form-input" name="propriete_adresse[]" placeholder="ex: Résidence Les Pins, Apt 12">
-                                    </div>
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_pieces">Nombre de pièces</span></label>
-                                        <select class="form-input" name="propriete_pieces[]">
-                                            <option value="1">1 pièce (studio)</option>
-                                            <option value="2">2 pièces (T2)</option>
-                                            <option value="3">3 pièces (T3)</option>
-                                            <option value="4">4 pièces (T4)</option>
-                                            <option value="5">5+ pièces</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_surface">Surface (m²)</span></label>
-                                        <input type="number" class="form-input" name="propriete_surface[]" placeholder="ex: 65">
-                                    </div>
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_chambres">Nombre de chambres</span></label>
-                                        <input type="number" class="form-input" name="propriete_chambres[]" placeholder="ex: 2" min="0" max="10">
-                                    </div>
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_sdb">Salles de bain</span></label>
-                                        <input type="number" class="form-input" name="propriete_sdb[]" placeholder="ex: 1" min="0" max="5">
-                                    </div>
-                                    <div>
-                                        <label class="form-label" style="font-size:0.85rem;"><span data-key="propriete_frequence">Fréquence pour ce bien</span></label>
-                                        <select class="form-input" name="propriete_frequence[]">
-                                            <option value="hebdomadaire" data-key="freq_hebdo">Hebdomadaire</option>
-                                            <option value="bimensuel" data-key="freq_bimensuel">Bimensuel (2x/mois)</option>
-                                            <option value="mensuel" data-key="freq_mensuel">Mensuel</option>
-                                            <option value="ponctuel" data-key="freq_ponctuel">Ponctuel</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="info-badge">
-                                    <i class="fas fa-info-circle"></i> 
-                                    <label style="margin-left: 5px;"><input type="checkbox" name="propriete_vitres[]" value="oui"> <span data-key="vitres_incluses">Vitres incluses</span></label>
-                                    <label style="margin-left: 15px;"><input type="checkbox" name="propriete_materiaux[]" value="fournis"> <span data-key="client_fournit">Client fournit les produits/matériaux</span></label>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" class="add-property-btn" onclick="addProperty()">
-                            <i class="fas fa-plus-circle"></i> <span data-key="ajouter_propriete">Ajouter une propriété / appartement</span>
-                        </button>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-calendar-alt"></i> <span data-key="frequence_globale">Fréquence globale souhaitée</span></label>
-                        <select class="form-input" name="frequence_globale">
-                            <option value="hebdomadaire" data-key="freq_hebdo">Hebdomadaire</option>
-                            <option value="bimensuel" data-key="freq_bimensuel">Bimensuel (2x/mois)</option>
-                            <option value="mensuel" data-key="freq_mensuel">Mensuel</option>
-                            <option value="ponctuel" data-key="freq_ponctuel">Ponctuel</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-truck"></i> <span data-key="logistique">Logistique et matériel</span></label>
-                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                            <label><input type="checkbox" name="materiel_fourni" value="produits"> <span data-key="client_fournit_produits">Le client fournit les produits d'entretien</span></label>
-                            <label><input type="checkbox" name="materiel_fourni" value="materiel"> <span data-key="client_fournit_materiel">Le client fournit le matériel (aspirateur, etc.)</span></label>
-                            <label><input type="checkbox" name="acces" value="cles"> <span data-key="acces_cles">Accès par clés / badge à disposition</span></label>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-comment-dots"></i> <span data-key="message">Informations complémentaires</span></label>
-                        <textarea class="form-input" name="message" rows="3" placeholder="Horaires spécifiques, consignes particulières, etc."></textarea>
-                    </div>
-                </div>
-                
-                <div class="conditions-container">
-                    <div class="conditions-checkbox">
-                        <input type="checkbox" id="acceptConditionsGestionnaire" required>
-                        <label for="acceptConditionsGestionnaire">
-                            <strong>Lu et approuvé</strong> — J'accepte les <a href="#" class="conditions-link" onclick="showConditionsModal(); return false;">Conditions Générales de Service</a> 
-                            (horaires d'intervention, délais de paiement, politique d'annulation, engagement contractuel).
-                        </label>
-                    </div>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-paper-plane"></i> <span data-key="envoyer_pro">Envoyer ma demande professionnelle</span>
-                </button>
-            </form>
+        <!-- ===== FORMULAIRE GOOGLE ===== -->
+        <div class="tabs-container fade-in" id="tabs" style="text-align: center; padding: 30px;">
+            <h2 style="color: var(--text-dark); margin-bottom: 10px;">
+                <i class="fas fa-file-alt" style="color: var(--primary-blue);"></i> 
+                Demande de devis gratuit
+            </h2>
+            <p style="color: var(--text-gray); margin-bottom: 25px;">
+                Remplissez ce formulaire. Nous vous répondons sous 24h.
+            </p>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScDb4bstBu8HE2qo0FpRQr_OXMZGQROBEhu5U8qROKGdSfpOQ/viewform?embedded=true" 
+                    width="100%" 
+                    height="900px" 
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0"
+                    style="max-width: 700px; border-radius: 16px; background: white;">
+                Chargement…
+            </iframe>
         </div>
-
-        <!-- TAB 3: AUTO-ENTREPRENEURS -->
-        <div id="tab3" class="tab-content">
-            <form id="formAutonome">
-                <div style="position: absolute; left: -9999px;">
-                    <input type="text" id="honeypot3" name="website" tabindex="-1">
-                </div>
-                <input type="hidden" name="type_client" value="autonome">
-                <input type="hidden" name="form_type" value="autonome">
-                
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <div style="font-size: 2.5rem; color: var(--success-green); margin-bottom: 10px;">🤝</div>
-                    <h3 style="color: var(--text-dark); font-size: 1.4rem;"><span data-key="autonome_intro">Rejoignez notre réseau</span></h3>
-                    <p style="color: var(--text-gray);" data-key="autonome_desc">Remplissez ce formulaire et recevez immédiatement notre dossier d'information par email. Nous vous contacterons sous 48h.</p>
-                </div>
-                
-                <!-- TOGGLE: ¿Ya eres autónomo o no? -->
-                <div class="form-group full-width" style="margin-bottom: 25px;">
-                    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                        <button type="button" class="autonome-toggle-btn active" id="btnPro" onclick="switchAutonomeMode('pro')">
-                            <i class="fas fa-briefcase"></i> <span data-key="autonome_toggle_pro">Je suis déjà auto-entrepreneur</span>
-                        </button>
-                        <button type="button" class="autonome-toggle-btn" id="btnNew" onclick="switchAutonomeMode('new')">
-                            <i class="fas fa-seedling"></i> <span data-key="autonome_toggle_new">Je veux le devenir / Je ne sais pas encore</span>
-                        </button>
-                    </div>
-                    <input type="hidden" name="mode_autonome" id="modeAutonome" value="pro">
-                </div>
-                
-                <div class="form-grid" id="formProFields">
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-building"></i> <span data-key="autonome_entreprise">Nom de l'entreprise</span> *</label>
-                        <input type="text" class="form-input" name="entreprise">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-id-card"></i> <span data-key="autonome_siret">Numéro SIRET</span> *</label>
-                        <input type="text" class="form-input" name="siret" pattern="[0-9]{14}" maxlength="14" placeholder="14 chiffres">
-                        <small style="color: var(--text-gray);"><span data-key="autonome_siret_info">Numéro SIRET de 14 chiffres. Vérifiable sur societe.com ou infogreffe.fr</span></small>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> <span data-key="autonome_zone">Votre secteur géographique</span> *</label>
-                        <input type="text" class="form-input" name="secteur" placeholder="ex: Vallespir, Côte Vermeille...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-briefcase"></i> <span data-key="autonome_activite">Activité principale</span> *</label>
-                        <input type="text" class="form-input" name="activite" placeholder="ex: Nettoyage, Jardinage, Bricolage...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-truck"></i> <span data-key="autonome_mobilite">Mobilité</span></label>
-                        <select class="form-input" name="mobilite">
-                            <option value="vehicule">Véhiculé(e) - je peux me déplacer</option>
-                            <option value="sans">Non véhiculé(e) - limité à mon secteur</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-comment"></i> <span data-key="autonome_message">Votre message</span></label>
-                        <textarea class="form-input" name="message" rows="3" placeholder="Parlez-nous de vous, votre expérience, vos motivations..."></textarea>
-                    </div>
-                </div>
-                
-                <!-- CAMPO ALTERNATIVO para los que NO son autónomos -->
-                <div id="formNewFields" style="display: none;">
-                    <div class="form-group full-width">
-                        <label class="form-label"><i class="fas fa-comment-dots"></i> <span data-key="autonome_new_message">Parlez-nous de votre situation</span> *</label>
-                        <textarea class="form-input" name="message_new" rows="5" placeholder="Expliquez-nous votre situation : où en êtes-vous, ce que vous aimeriez faire, vos questions..."></textarea>
-                        <small style="color: var(--text-gray); margin-top: 8px; display: block;">
-                            <i class="fas fa-lightbulb" style="color: var(--warning-orange);"></i> 
-                            <span data-key="autonome_new_help">Pas d'inquiétude. Nous pouvons vous aider à vous former et à vous lancer. Dites-nous simplement d'où vous venez et où vous voulez aller.</span>
-                        </small>
-                    </div>
-                </div>
-                
-                <!-- CAMPOS COMUNES (siempre visibles) -->
-                <div class="form-grid" style="margin-top: 10px;">
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-user-tie"></i> <span data-key="contact">Personne de contact</span> *</label>
-                        <input type="text" class="form-input" name="contact" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-phone"></i> <span data-key="telephone">Téléphone</span> *</label>
-                        <input type="tel" class="form-input" name="telephone" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-envelope"></i> <span data-key="email">Email</span> *</label>
-                        <input type="email" class="form-input" name="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label"><i class="fas fa-map-marker-alt"></i> <span data-key="autonome_zone">Votre secteur géographique</span></label>
-                        <input type="text" class="form-input" name="secteur_new" placeholder="ex: Vallespir, Côte Vermeille...">
-                    </div>
-                </div>
-                
-                <div class="alert-box" id="alertPro" style="margin-bottom: 25px; background: #fff3e0; border: 2px solid var(--warning-orange); color: #e65100;">
-                    <i class="fas fa-shield-alt" style="font-size: 1.5rem;"></i>
-                    <span data-key="autonome_verif">Votre numéro SIRET sera vérifié avant tout contact. Seuls les auto-entrepreneurs immatriculés peuvent rejoindre le réseau.</span>
-                </div>
-                
-                <div class="alert-box" id="alertNew" style="display: none; margin-bottom: 25px; background: #e8f5e9; border: 2px solid var(--success-green); color: #2e7d32;">
-                    <i class="fas fa-heart" style="font-size: 1.5rem;"></i>
-                    <span data-key="autonome_new_verif">Pas de panique. On vous explique tout, on vous aide à vous former et à vous lancer. Chaque grand chemin commence par un premier pas.</span>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="submitAutonome" style="background: linear-gradient(135deg, var(--success-green), #2e7d32);">
-                    <i class="fas fa-paper-plane"></i> <span data-key="autonome_envoyer">Recevoir le dossier d'information</span>
-                </button>
-            </form>
-        </div>
-    </div>
 
     <!-- ===== LIGNE DE CONFIANCE ===== -->
     <div class="fade-in" style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 24px;padding:18px 20px;margin-bottom:50px;background:var(--card-white);border-radius:60px;box-shadow:var(--shadow-sm);text-align:center;font-size:0.85rem;color:var(--text-dark);font-weight:500;">
@@ -2518,7 +2172,7 @@
             return /^(\+|00)?[0-9]{9,15}$/.test(cleaned);
         }
         
-        var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec';
+        var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec';
 
         var fraudDB = {
             blockedClients: [],
@@ -3683,7 +3337,7 @@
                 }
                 
                 // Envio a Google Sheets
-                var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec';
+                var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec';
                 var img = new Image();
                 img.src = GOOGLE_URL + '?data=' + encodeURIComponent(JSON.stringify([demandeData]));
 

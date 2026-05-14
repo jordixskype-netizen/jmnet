@@ -1018,27 +1018,43 @@
             regime: 'Micro-BNC · Franchise TVA · Art. 293B CGI'
         };
         
-        var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec';
+        var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec';
 
         function loadFromSheet(sheetName, callback) {
             var cbName = 'cpta_' + sheetName + '_' + Date.now();
-            var scriptEl = document.createElement('script');
+            var s = document.createElement('script');
+            var done = false;
+            
             var timeout = setTimeout(function() {
-                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
-                delete window[cbName];
-                if (callback) callback(null);
+                if (!done) {
+                    done = true;
+                    if (s.parentNode) s.parentNode.removeChild(s);
+                    delete window[cbName];
+                    if (callback) callback(null);
+                }
             }, 8000);
 
             window[cbName] = function(data) {
+                if (done) return;
+                done = true;
                 clearTimeout(timeout);
-                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+                if (s.parentNode) s.parentNode.removeChild(s);
                 delete window[cbName];
                 callback(data);
             };
 
-            scriptEl.src = GOOGLE_URL + '?sheet=' + sheetName + '&callback=' + cbName + '&t=' + Date.now();
-            scriptEl.async = true;
-            document.head.appendChild(scriptEl);
+            s.src = GOOGLE_URL + '?sheet=' + encodeURIComponent(sheetName) + '&callback=' + encodeURIComponent(cbName) + '&t=' + Date.now();
+            s.onerror = function() {
+                if (!done) {
+                    done = true;
+                    clearTimeout(timeout);
+                    if (s.parentNode) s.parentNode.removeChild(s);
+                    delete window[cbName];
+                    if (callback) callback(null);
+                }
+            };
+            document.head.appendChild(s);
+                console.log('Callback registrado:', cbName, typeof window[cbName]);
         }
 
         function parseSheetRows(data) {
@@ -1530,12 +1546,12 @@
                 // Notifier Google Sheets du paiement (demande)
                 if (facture.id_demande) {
                     var imgPayee = new Image();
-                    imgPayee.src = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec?action=update&id=' + encodeURIComponent(facture.id_demande) + '&statut=payee&t=' + Date.now();
+                    imgPayee.src = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec?action=update&id=' + encodeURIComponent(facture.id_demande) + '&statut=payee&t=' + Date.now();
                 }
                 
                 // Enviar al Livre de Recettes (Google Sheets pestaña LIVRE)
                 var imgLivre = new Image();
-                imgLivre.src = 'https://script.google.com/macros/s/AKfycby5h_yRtSokN2oTYttTbnHUUtPh-CZTdSLxttIDzfDcrQvcaforPG3P0OLgUOOzU5xwww/exec?sheet=LIVRE&data=' + encodeURIComponent(JSON.stringify([entryLivre])) + '&t=' + Date.now();
+                imgLivre.src = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec?sheet=LIVRE&data=' + encodeURIComponent(JSON.stringify([entryLivre])) + '&t=' + Date.now();
                 
                 showNotification('✅ Facture ' + escapeHtml(factureId) + ' PAYÉE (' + mode + ') · Livre mis à jour', 'success');
             };

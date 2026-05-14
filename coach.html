@@ -199,6 +199,18 @@
         }
         .form-input:focus { outline: none; border-color: #1e88e5; }
         
+        .sync-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .sync-online { background: #e8f5e9; color: #2e7d32; }
+        .sync-offline { background: #fff3e0; color: #e65100; }
+        
         @media (max-width: 768px) {
             .stats-row { grid-template-columns: repeat(2,1fr); }
             .calendar-grid { gap: 2px; }
@@ -213,6 +225,7 @@
         <div class="coach-header">
             <div class="coach-title">
                 <span style="font-size:1.3rem;">🧠</span> Coach · Orquestateur
+                <span class="sync-badge sync-online" id="syncBadge"><i class="fas fa-cloud"></i> Connecté</span>
             </div>
             <div class="coach-actions">
                 <button class="btn btn-outline btn-sm" onclick="recalcularTodo()" title="Recalculer toutes les assignations">
@@ -377,14 +390,14 @@
 
     <script>
         // ============================================
-        // COACH SYSTEM v2.2 — PROXY A TRAVÉS DE ADMIN
+        // COACH SYSTEM v2.4 — GOOGLE SHEETS + LOCAL
         // ============================================
         
         const STORAGE_AUTONOMOS = 'jmnet_autonomos';
         const STORAGE_ASIGNACIONES = 'jmnet_asignaciones';
         const STORAGE_AUSENCIAS = 'jmnet_ausencias';
         const STORAGE_DEMANDES = 'jmnet_demandes';
-        const API_KEY = 'JMNet_2026_Secure!66';
+        var GOOGLE_URL = 'https://script.google.com/macros/s/AKfycbyU_dAiefAOhGYsoHTH2amrgsRqI4vOUx6iKg6QiskWyzUSuH-mBmdwoFp08F0VcDMBBA/exec';
         
         const SKILLS_LABELS = {
             nettoyage_regulier:'Nettoyage rég.', nettoyage_profond:'Nettoyage profond',
@@ -401,54 +414,9 @@
         let ausencias = [];
         let demandes = [];
         let currentWeekOffset = 0;
+        let isOnline = false;
         
-        // ========== PROXY CORS (a través de admin.html padre) ==========
-        var coachPendingRequests = {};
-
-        window.addEventListener('message', function(event) {
-            var d = event.data;
-            // Recibir respuestas del proxy (reenviadas por admin.html)
-            if (d && d.id && typeof d.id === 'string' && d.id.startsWith('coach-') && coachPendingRequests[d.id]) {
-                coachPendingRequests[d.id](d.success, d.data);
-                delete coachPendingRequests[d.id];
-            }
-            // Recibir orden de refresh del padre
-            if (event.data === 'refresh') {
-                poll();
-            }
-        });
-
-        function coachProxyFetch(url, options) {
-            options = options || {};
-            return new Promise(function(resolve, reject) {
-                var id = 'coach-' + Date.now() + Math.random();
-                coachPendingRequests[id] = function(success, data) {
-                    if (success) {
-                        try {
-                            var parsed = JSON.parse(data);
-                            resolve({ ok: true, json: function() { return parsed; }, text: function() { return data; } });
-                        } catch(e) {
-                            reject(new Error('JSON invalido: ' + e.message));
-                        }
-                    } else {
-                        reject(new Error(data || 'Error del proxy'));
-                    }
-                };
-                // Enviar petición al padre (admin.html) para que la reenvíe al proxy iframe
-                if (window.parent && window.parent !== window) {
-                    window.parent.postMessage({
-                        id: id, url: url,
-                        method: options.method || 'GET',
-                        body: options.body || null,
-                        headers: options.headers || {}
-                    }, '*');
-                } else {
-                    reject(new Error('No hay conexión con el padre (admin.html)'));
-                }
-            });
-        }
-        
-        // ========== STORAGE ==========
+        // ========== STORAGE LOCAL ==========
         function loadAll() {
             try { autonomos = JSON.parse(localStorage.getItem(STORAGE_AUTONOMOS)) || []; } catch(e) { autonomos=[]; }
             try { asignaciones = JSON.parse(localStorage.getItem(STORAGE_ASIGNACIONES)) || []; } catch(e) { asignaciones=[]; }
@@ -457,45 +425,75 @@
         }
         
         function saveAll() {
+            localStorage.setItem(STORAGE_AUTONOMOS, JSON.stringify(autonomos));
             localStorage.setItem(STORAGE_ASIGNACIONES, JSON.stringify(asignaciones));
             localStorage.setItem(STORAGE_AUSENCIAS, JSON.stringify(ausencias));
-            syncToServer();
         }
         
-        async function syncToServer() {
-            try {
-                const csrf = sessionStorage.getItem('csrf_token') || '';
-                await coachProxyFetch('https://jmnet-services.free.nf/api.php?api_key=' + API_KEY, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-API-Key': API_KEY,
-                        'X-CSRF-Token': csrf
-                    },
-                    body: JSON.stringify({
-                        asignaciones: asignaciones,
-                        ausencias: ausencias,
-                        autonomos: autonomos
-                    })
-                });
-            } catch(e) {
-                console.log('Sync serveur coach: indisponible');
-            }
-        }
-        
-        async function loadFromServer() {
-            try {
-                const resp = await coachProxyFetch('https://jmnet-services.free.nf/api.php?api_key=' + API_KEY, {
-                    headers: { 'X-API-Key': API_KEY }
-                });
-                const data = await resp.json();
-                if (data) {
-                    if (data.autonomos && data.autonomos.length > 0) autonomos = data.autonomos;
-                    if (data.asignaciones && data.asignaciones.length > 0) asignaciones = data.asignaciones;
-                    if (data.ausencias && data.ausencias.length > 0) ausencias = data.ausencias;
+        // ========== STORAGE SERVIDOR ==========
+        function loadFromServer(sheetName, targetArray, callback) {
+            var cbName = 'coach_load_' + Date.now() + '_' + sheetName;
+            var scriptEl = document.createElement('script');
+            var timeout = setTimeout(function() {
+                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+                delete window[cbName];
+                if (callback) callback();
+            }, 8000);
+
+            window[cbName] = function(data) {
+                clearTimeout(timeout);
+                if (scriptEl.parentNode) scriptEl.parentNode.removeChild(scriptEl);
+                delete window[cbName];
+                
+                if (data && Array.isArray(data) && data.length > 1) {
+                    var headers = data[0];
+                    var loaded = [];
+                    for (var i = 1; i < data.length; i++) {
+                        var row = {};
+                        for (var j = 0; j < headers.length; j++) {
+                            row[headers[j]] = data[i][j] || "";
+                        }
+                        if (sheetName === 'autonomos') {
+                            if (typeof row.skills === 'string') try { row.skills = JSON.parse(row.skills); } catch(e) { row.skills = [row.skills]; }
+                            if (typeof row.disponibilidad === 'string') try { row.disponibilidad = JSON.parse(row.disponibilidad); } catch(e) { row.disponibilidad = {}; }
+                            if (!row.skills || !Array.isArray(row.skills)) row.skills = ['nettoyage_regulier'];
+                            if (!row.disponibilidad || typeof row.disponibilidad !== 'object') row.disponibilidad = {};
+                        }
+                        row.duracion = parseInt(row.duracion) || 2;
+                        loaded.push(row);
+                    }
+                    if (loaded.length > 0) {
+                        targetArray.length = 0;
+                        loaded.forEach(function(item) { targetArray.push(item); });
+                    }
                 }
-            } catch(e) {
-                console.log('Coach: Serveur inaccessible, données locales utilisées');
+                isOnline = true;
+                updateSyncBadge();
+                if (callback) callback();
+            };
+
+            scriptEl.src = GOOGLE_URL + '?sheet=' + sheetName + '&callback=' + cbName + '&t=' + Date.now();
+            scriptEl.async = true;
+            document.head.appendChild(scriptEl);
+        }
+
+        function saveToServer(data, sheetName) {
+            var flat = {};
+            for (var k in data) {
+                if (!data.hasOwnProperty(k)) continue;
+                if (k === 'skills' && Array.isArray(data[k])) flat[k] = JSON.stringify(data[k]);
+                else if (k === 'disponibilidad' && typeof data[k] === 'object') flat[k] = JSON.stringify(data[k]);
+                else flat[k] = data[k];
+            }
+            var img = new Image();
+            img.src = GOOGLE_URL + '?sheet=' + sheetName + '&data=' + encodeURIComponent(JSON.stringify([flat])) + '&t=' + Date.now();
+        }
+
+        function updateSyncBadge() {
+            var badge = document.getElementById('syncBadge');
+            if (badge) {
+                badge.className = 'sync-badge ' + (isOnline ? 'sync-online' : 'sync-offline');
+                badge.innerHTML = isOnline ? '<i class="fas fa-cloud"></i> Connecté' : '<i class="fas fa-wifi"></i> Local';
             }
         }
         
@@ -593,7 +591,6 @@
             elegido.balanceHorasSemana += (trabajo.duracion || 2);
             const idx = autonomos.findIndex(a => a.id === elegido.id);
             if (idx >= 0) autonomos[idx] = elegido;
-            localStorage.setItem(STORAGE_AUTONOMOS, JSON.stringify(autonomos));
             
             return { asignado: true, mensaje: 'Assigné à ' + elegido.nom, autonomo: elegido.nom };
         }
@@ -648,6 +645,7 @@
                     
                     const resultado = asignarTrabajo(trabajo);
                     asignaciones.push(trabajo);
+                    saveToServer(trabajo, 'asignaciones');
                     nuevas++;
                 }
             });
@@ -842,6 +840,7 @@
             
             asignaciones.push(trabajo);
             saveAll();
+            saveToServer(trabajo, 'asignaciones');
             renderAll();
             cerrarModal('modalAsignacion');
             flashMessage('✅ Travail assigné manuellement', 'success');
@@ -871,6 +870,7 @@
             }
             
             ausencias.push(ausencia);
+            saveToServer(ausencia, 'ausencias');
             
             const trabajosAfectados = asignaciones.filter(a => 
                 a.idAutonomo === ausencia.idAutonomo && 
@@ -883,6 +883,7 @@
             trabajosAfectados.forEach(t => {
                 t.idAutonomo = null;
                 t.estado = 'urgente';
+                saveToServer(t, 'asignaciones');
                 const resultado = asignarTrabajo(t);
                 if (resultado.asignado) reasignados++;
             });
@@ -899,6 +900,7 @@
             if (idx >= 0) {
                 const resultado = asignarTrabajo(asignaciones[idx]);
                 saveAll();
+                saveToServer(asignaciones[idx], 'asignaciones');
                 renderAll();
                 flashMessage(resultado.asignado ? '✅ Assigné à ' + resultado.autonomo : '❌ ' + resultado.mensaje, resultado.asignado ? 'success' : 'error');
             }
@@ -908,6 +910,9 @@
             if (confirm('Supprimer cette absence et réassigner les travaux ?')) {
                 ausencias = ausencias.filter(a => a.id !== id);
                 saveAll();
+                // Enviar delete al servidor
+                var img = new Image();
+                img.src = GOOGLE_URL + '?sheet=ausencias&action=delete&id=' + encodeURIComponent(id) + '&t=' + Date.now();
                 recalcularTodo();
                 renderAll();
                 flashMessage('🗑️ Absence supprimée · Travaux réassignés', 'success');
@@ -925,23 +930,16 @@
             setTimeout(() => el.innerHTML = '', 5000);
         }
         
-        // ========== COMUNICACIÓN CON ADMIN.HTML ==========
-        window.addEventListener('message', function(event) {
-            if (event.data === 'refresh') {
-                poll();
-            }
-        });
-        
-        if (window.parent !== window) {
-            window.parent.postMessage('coach-ready', '*');
-        }
-        
         // ========== POLLING ==========
         async function poll() {
             loadAll();
-            await loadFromServer();
-            importarDemandesConfirmadas();
-            renderAll();
+            loadFromServer('asignaciones', asignaciones, function() {});
+            loadFromServer('ausencias', ausencias, function() {});
+            loadFromServer('autonomos', autonomos, function() {
+                saveAll();
+                importarDemandesConfirmadas();
+                renderAll();
+            });
         }
         
         window.addEventListener('storage', function(e) {
@@ -950,31 +948,24 @@
             }
         });
         
-        // ========== OBTENER CSRF AL INICIAR ==========
-        async function initCsrf() {
-            try {
-                const resp = await coachProxyFetch('https://jmnet-services.free.nf/api.php?endpoint=csrf-token&api_key=' + API_KEY);
-                const data = await resp.json();
-                if (data.csrf_token) {
-                    sessionStorage.setItem('csrf_token', data.csrf_token);
-                }
-            } catch(e) {
-                console.log('Coach: CSRF token non disponible');
-            }
-        }
-        
         // ========== INIT ==========
         (async function() {
-            await initCsrf();
             loadAll();
-            await loadFromServer();
-            importarDemandesConfirmadas();
-            renderAll();
             
-            setInterval(poll, 10000);
-            setInterval(syncToServer, 30000);
+            // Cargar todo desde servidor
+            loadFromServer('autonomos', autonomos, function() {
+                loadFromServer('asignaciones', asignaciones, function() {
+                    loadFromServer('ausencias', ausencias, function() {
+                        saveAll();
+                        importarDemandesConfirmadas();
+                        renderAll();
+                    });
+                });
+            });
             
-            console.log('✅ [Coach v2.2] Initialisé · Proxy a través de admin · CSRF OK');
+            setInterval(poll, 15000);
+            
+            console.log('✅ [Coach v2.4] Initialisé · Google Sheets + Local');
         })();
     </script>
 </body>
